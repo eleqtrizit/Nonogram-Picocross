@@ -1,0 +1,127 @@
+body {
+  background: rgb(16, 0, 59);
+  color: rgb(255, 255, 255);
+}
+
+#header {
+  display: flex;
+  justify-content: center;
+}
+
+#header > div {
+  height: 10vh;
+  width: auto;
+  text-align: center;
+  font-size: 50px;
+}
+
+#main {
+  height: 90vh;
+}
+
+#welcome {
+  display: flex;
+  justify-content: center;
+}
+
+#welcome > div {
+  width: auto;
+  margin-top: 20vh;
+  text-align: center;
+  line-height: 75px;
+  font-size: 75px;
+}
+
+#menu {
+  display: flex;
+  justify-content: center;
+}
+
+#menu > div {
+  width: auto;
+  margin-top: 20vh;
+  text-align: center;
+  line-height: 75px;
+  font-size: 75px;
+}
+
+#menu > div > div {
+  margin-bottom: 100px;
+}
+
+#menu > div > div > div {
+  cursor: pointer;
+  margin-bottom: 50px;
+}
+
+/* game board---------------------------------------------------- */
+
+#board {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.square {
+  position: relative;
+  margin: 2px;
+  border: 1px solid;
+  box-sizing: border-box;
+}
+
+.square::before {
+  content: "";
+  display: block;
+  padding-top: 100%;
+}
+
+.square .content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.square .content:hover {
+	background-color: red;
+  }
+
+/* slider --------------------------------------------------------- */
+
+.slidecontainer {
+  width: 100%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 70%;
+  height: 15px;
+  border-radius: 5px;
+  background: #00b1f7;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgb(153, 0, 255);
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: rgb(153, 0, 255);
+  cursor: pointer;
+}
