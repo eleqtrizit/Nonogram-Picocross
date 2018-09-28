@@ -1,7 +1,20 @@
 body {
   background: rgb(16, 0, 59);
   color: rgb(255, 255, 255);
+  font-size: 20px;
+  text-align:center;
 }
+
+body > div {
+  margin:auto;
+}
+
+@media only screen and (min-width: 800px) {
+  body {
+    width: 800px;
+    margin: auto;
+  }
+} 
 
 #header {
   display: flex;
@@ -54,11 +67,21 @@ body {
   margin-bottom: 50px;
 }
 
+/* game headers ------------------------------------------------- */
+#gameStats {
+	width: 100%;
+}
+
+#play {
+  display: block;
+}
+
+
 /* game board---------------------------------------------------- */
 
 #board {
-	display: flex;
-	flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .square {
@@ -83,8 +106,8 @@ body {
 }
 
 .square .content:hover {
-	background-color: red;
-  }
+  background-color: red;
+}
 
 /* slider --------------------------------------------------------- */
 

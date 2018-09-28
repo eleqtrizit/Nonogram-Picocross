@@ -3,6 +3,7 @@
 
 var slider = document.getElementById("myDiff");
 var difficulty = slider.value; // medium default
+var timerSeconds=0;
 
 var gameBoard = {
     grid: [], // ultimately a 3d grid
@@ -23,7 +24,21 @@ var square = {
 function startGame(length){
 	generateGrid(length);
 	createGameBoardHTML(length);
+	elementsOnGrid();
 	activateSection('play');
+	startTimer();
+}
+
+function elementsOnGrid(){
+	document.getElementById('elementsOnGrid').innerHTML='Elements on Grid: ' + (gameBoard.length*gameBoard.length);
+}
+
+function startTimer(){
+	document.getElementById("timer").innerHTML = 'Timer: ' + timerSeconds;
+	setInterval(function (){
+		timerSeconds++;
+		document.getElementById("timer").innerHTML = 'Timer: ' + timerSeconds;
+	}, 1000);
 }
 
 function setGameDifficulty(_difficulty){
