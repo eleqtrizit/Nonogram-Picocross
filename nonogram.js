@@ -23,6 +23,7 @@ var square = {
 };
 
 function welcomeScreenGo(){
+	playSound('menuMusic') ;
 	playSound('menuSelect');
 	flashText('welcomeScreenGo'); 
 	activateSection('menu',500);
@@ -32,6 +33,7 @@ function startGame(length) {
 	generateGrid(length);
 	createGameBoardHTML(length);
 	elementsOnGrid();
+	stopSound('menuMusic');
 	playSound('menuSelect');
 	flashText('startGame'+length);
     activateSection("play",500);
@@ -196,7 +198,6 @@ function activateSection(id, delayUntilChangover = 0) {
 	console.log("Activating section: " + id);
 
 	let changeOver = function(){
-		let main = document.getElementById("main");
 		let c = main.children;
 		for (let i = 0; i < c.length; i++) {
 			if (c[i].id != "")
@@ -211,7 +212,10 @@ function activateSection(id, delayUntilChangover = 0) {
 
 function init() {
 	// preload for performance
-	buildIdTargets(); 
+	buildIdTargets();
+	var main = document.getElementById("main");
+	var audios = document.getElementById('audios');
+
 	// begin
 	activateSection("welcome");
 }
@@ -255,7 +259,6 @@ function copyObject(obj) {
 
 // ----------------- audio routines
 function playSound(id){
-	const audios = document.getElementById('audios');
 	let c = audios.children;
 	for (let i=0; i<c.length; i++){
 		if (c[i].id===id){
@@ -267,6 +270,19 @@ function playSound(id){
 		}
 	}
 	
+}
+
+function stopSound(id){
+	let c = audios.children;
+	for (let i=0; i<c.length; i++){
+		if (c[i].id===id){
+			console.log(c[i]);
+			let audio = c[i];
+			if (!audio) return;
+			audio.pause();
+			audio.currentTime = 0;
+		}
+	}
 }
 
 

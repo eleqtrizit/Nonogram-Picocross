@@ -19,9 +19,13 @@
 		</video>
 	</div>
 	<div id="audios">
+			<audio id="menuMusic" controls style="display:none" preload="auto">
+					<source src="assets/DiscoFever.mp3" type="audio/mpeg">
+					<source src="assets/DiscoFever.wav" type="audio/mpeg">
+				</audio>
 		<audio id="menuSelect" controls style="display:none" preload="auto">
-			<source src="assets/sfx_menu_select4.mp3" type="audio/mpeg">
-			<source src="assets/sfx_menu_select4.wav" type="audio/mpeg">
+			<source src="assets/sfx_menu_select4_short.mp3" type="audio/mpeg">
+			<source src="assets/sfx_menu_select4_short.wav" type="audio/mpeg">
 		</audio>
 
 	</div>
@@ -44,6 +48,7 @@
 		<div id="menu">
 			<div>
 				<div class="slidecontainer">
+					Difficulty:
 					<input type="range" min="1" max="100" value="50" class="slider" id="myDiff">
 				</div>
 

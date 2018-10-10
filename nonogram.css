@@ -73,7 +73,7 @@ video#openingVid {
   margin-top: 20vh;
   text-align: center;
   line-height: 75px;
-  font-size: 50px;
+  font-size: 25px;
 }
 
 #menu > div > div {
@@ -83,6 +83,7 @@ video#openingVid {
 #menu > div > div > div {
   cursor: pointer;
   margin-bottom: 50px;
+  font-size: 40px;
 }
 
 /* game headers ------------------------------------------------- */
