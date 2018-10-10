@@ -72,8 +72,8 @@ video#openingVid {
   width: auto;
   margin-top: 20vh;
   text-align: center;
-  line-height: 75px;
   font-size: 25px;
+  line-height: 40px;
 }
 
 #menu > div > div {
@@ -81,10 +81,24 @@ video#openingVid {
 }
 
 #menu > div > div > div {
+  line-height: 35px;
   cursor: pointer;
   margin-bottom: 50px;
-  font-size: 40px;
+  font-size: 35px;
 }
+
+
+@media only screen 
+and (min-device-width : 375px) 
+and (max-device-width : 812px) {
+	#menu > div {
+		margin-top: 0vh;
+	}
+	#menu > div > div > div {
+		font-size: 30px;
+	  }
+}
+
 
 /* game headers ------------------------------------------------- */
 #gameStats {
