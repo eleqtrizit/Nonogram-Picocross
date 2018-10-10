@@ -3,6 +3,8 @@
 var slider = document.getElementById("myDiff");
 var difficulty = slider.value; // medium default
 var timerSeconds = 0;
+var target = {};
+var fromId = 'welcome';
 
 var gameBoard = {
 	grid: [], // ultimately a 3d grid
@@ -20,11 +22,19 @@ var square = {
 	isDisplayed: false
 };
 
+function welcomeScreenGo(){
+	playSound('menuSelect');
+	flashText('welcomeScreenGo'); 
+	activateSection('menu',500);
+}
+
 function startGame(length) {
 	generateGrid(length);
 	createGameBoardHTML(length);
 	elementsOnGrid();
-    activateSection("play");
+	playSound('menuSelect');
+	flashText('startGame'+length);
+    activateSection("play",500);
     activateVideoBG('none');
 	startTimer();
 }
@@ -182,26 +192,83 @@ function activateVideoBG(id) {
 	
 }
 
-function activateSection(id) {
+function activateSection(id, delayUntilChangover = 0) {
 	console.log("Activating section: " + id);
-	let main = document.getElementById("main");
-	let c = main.children;
-	for (let i = 0; i < c.length; i++) {
-		if (c[i].id != "")
-			document.getElementById(c[i].id).style.display = "none";
+
+	let changeOver = function(){
+		let main = document.getElementById("main");
+		let c = main.children;
+		for (let i = 0; i < c.length; i++) {
+			if (c[i].id != "")
+				document.getElementById(c[i].id).style.display = "none";
+		}
+		document.getElementById(id).style.display = "inline";
 	}
 
-	document.getElementById(id).style.display = "inline";
+	setTimeout(changeOver, delayUntilChangover);
+	fromId=id;
 }
 
 function init() {
+	// preload for performance
+	buildIdTargets(); 
+	// begin
 	activateSection("welcome");
+}
+
+function buildIdTargets() {
+	let ts = document.querySelectorAll('*[id]');
+	for (let i=0; i<ts.length; i++){
+		target[ts[i].id] = ts[i];
+	}
+}
+
+
+// ---------------- animations
+function flashText(id,animDelay=50,repeat=1){
+
+	setTimeout(function(){
+		target[id].className='flash1';
+	}, 0);
+	setTimeout(function(){
+		target[id].className='flash2';
+	}, animDelay*1);
+	setTimeout(function(){
+		target[id].className='flash3';
+	}, animDelay*2);
+	setTimeout(function(){
+		target[id].className='flash4';
+	}, animDelay*3);
+	setTimeout(function(){
+		if (repeat>0){
+			repeat--;
+			console.log(repeat);
+			flashText(id,animDelay,repeat);
+		}
+	}, animDelay*4);
 }
 
 // ---------------- utility functions
 function copyObject(obj) {
 	return JSON.parse(JSON.stringify(obj));
 }
+
+// ----------------- audio routines
+function playSound(id){
+	const audios = document.getElementById('audios');
+	let c = audios.children;
+	for (let i=0; i<c.length; i++){
+		if (c[i].id===id){
+			console.log(c[i]);
+			let audio = c[i];
+			if (!audio) return;
+			audio.currentTime = 0;
+			audio.play();
+		}
+	}
+	
+}
+
 
 // ----------------- debug helpers
 function showGridInConsole() {

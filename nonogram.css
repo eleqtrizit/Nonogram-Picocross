@@ -1,8 +1,9 @@
 body {
   background: rgb(16, 0, 59);
   color: rgb(255, 255, 255);
-  font-size: 20px;
+  font-size: 14px;
   text-align:center;
+  font-family: 'Press Start 2P', cursive;
 }
 
 body > div {
@@ -42,7 +43,7 @@ video#openingVid {
   height: 10vh;
   width: auto;
   text-align: center;
-  font-size: 50px;
+  font-size: 30px;
 }
 
 #main {
@@ -59,7 +60,7 @@ video#openingVid {
   margin-top: 20vh;
   text-align: center;
   line-height: 75px;
-  font-size: 75px;
+  font-size: 60px;
 }
 
 #menu {
@@ -72,7 +73,7 @@ video#openingVid {
   margin-top: 20vh;
   text-align: center;
   line-height: 75px;
-  font-size: 75px;
+  font-size: 50px;
 }
 
 #menu > div > div {
@@ -125,6 +126,21 @@ video#openingVid {
 .square .content:hover {
   background-color: red;
 }
+
+/* game animations------------------------------------------------- */
+.flash1 {
+	color: #ff00ff
+}
+.flash2 {
+	color:#00ffff
+}
+.flash3 {
+	color:#0087ff
+}
+.flash4 {
+	color: #0000ff
+}
+
 
 /* slider --------------------------------------------------------- */
 

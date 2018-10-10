@@ -2,69 +2,76 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Nonogram</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="nonogram.css">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Nonogram</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="nonogram.css">
+	<link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
 </head>
 
 <body>
-    <div id="videos">
-            <video playsinline autoplay muted loop id="openingVid">
-                    <source src="assets/opening3.mp4" type="video/webm">
-                    <source src="assets/opening3.webm" type="video/mp4">
-                </video>
-    </div>
-    
+	<div id="videos">
+		<video playsinline autoplay muted loop id="openingVid">
+			<source src="assets/opening3.mp4" type="video/webm">
+			<source src="assets/opening3.webm" type="video/mp4">
+		</video>
+	</div>
+	<div id="audios">
+		<audio id="menuSelect" controls style="display:none" preload="auto">
+			<source src="assets/sfx_menu_select4.mp3" type="audio/mpeg">
+			<source src="assets/sfx_menu_select4.wav" type="audio/mpeg">
+		</audio>
 
-    <div id="header">
-        <div>
-            Nonogram!
-        </div>
-    </div>
+	</div>
 
-    <div id="main">
+	<div id="header">
+		<div>
+			Nonogram!
+		</div>
+	</div>
 
-
-        <div id="welcome">
-            <div onclick="activateSection('menu')">
-                Start Game
-            </div>
-        </div>
-
-        <div id="menu">
-            <div>
-                <div class="slidecontainer">
-                    <input type="range" min="1" max="100" value="50" class="slider" id="myDiff">
-                </div>
-
-                <div class="menuoptions">
-                    <div onclick="startGame(7)">
-                        Start 7x7 Game
-                    </div>
-                    <div onclick="startGame(13)">
-                        Start 13x3 Game
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="play">
-            <div id="gameStats">
-                <span id="timer"></span>
-                <span id="turns"></span>
-                <span id="elementsOnGrid"></span>
-            </div>
-            <div id="board"></div>
-        </div>
-
-    </div>
+	<div id="main">
 
 
+		<div id="welcome">
+			<div onclick="welcomeScreenGo()" id="welcomeScreenGo">
+				Start Game
+			</div>
+		</div>
 
-    <script src="nonogram.js" async defer></script>
+		<div id="menu">
+			<div>
+				<div class="slidecontainer">
+					<input type="range" min="1" max="100" value="50" class="slider" id="myDiff">
+				</div>
+
+				<div class="menuoptions">
+					<div onclick="startGame(7)" id="startGame7">
+						Start 7x7 Game
+					</div>
+					<div onclick="startGame(13)" id="startGame13">
+						Start 13x3 Game
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="play">
+			<div id="gameStats">
+				<span id="timer"></span>
+				<span id="turns"></span>
+				<span id="elementsOnGrid"></span>
+			</div>
+			<div id="board"></div>
+		</div>
+
+	</div>
+
+
+
+	<script src="nonogram.js" async defer></script>
 </body>
 
 </html>
