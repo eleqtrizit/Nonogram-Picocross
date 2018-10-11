@@ -29,18 +29,50 @@ function welcomeScreenGo(){
 	activateSection('menu',500);
 }
 
+// !!!! add check for empty rows/cols and regenerate
+
+
 function startGame(length) {
 	generateGrid(length);
 	createGameBoardHTML(length);
+	writeColStreaksToGrid();
+	writeRowStreaksToGrid();
 	elementsOnGrid();
 	stopSound('menuMusic');
 	playSound('menuSelect');
 	flashText('startGame'+length);
 	activateSection("play",500);
-    activateVideoBG('none');
+	activateVideoBG('none');
+	console.log(gameBoard);
 	startTimer();
 }
 
+function writeColStreaksToGrid() {
+	for (let i=0; i<gameBoard.colStreaks.length; i++){
+		let t = '';
+		for (let j=0; j<gameBoard.colStreaks[i].length; j++){
+			t += gameBoard.colStreaks[i][j] + ' ';
+		}
+		let offset=i+1;
+		let id= offset + '|0';
+		target[id].children[0].innerHTML=t;
+		
+	}
+}
+
+function writeRowStreaksToGrid() {
+	for (let i=0; i<gameBoard.rowStreaks.length; i++){
+		let t = '';
+		for (let j=0; j<gameBoard.rowStreaks[i].length; j++){
+			t += gameBoard.rowStreaks[i][j] + '<br>';
+		}
+		let offset=i+1;
+		let id= '0|'+offset;
+		console.log(id);
+		target[id].children[0].innerHTML=t;
+		target[id].children[0].className='top-row';
+	}
+}
 
 function elementsOnGrid() {
 	document.getElementById("elementsOnGrid").innerHTML =
@@ -78,6 +110,9 @@ function createGameBoardHTML(length) {
 			board.appendChild(square);
 		}
 	}
+
+	// rebuild targets
+	buildIdTargets();
 }
 
 function generateGrid(l) {
@@ -181,16 +216,14 @@ function difficultyMarkup() {
 
 function activateVideoBG(id) {
 	console.log("Activating background video: " + id);
-    let videos = document.getElementById("videos");
     let c = videos.children;
 	for (let i = 0; i < c.length; i++) {
-        console.log(c[i].id);
 		if (c[i].id != "")
-			document.getElementById(c[i].id).style.display = "none";
+			target[c[i].id].style.display = "none";
 	}
 
     if (id !== 'none') {
-        document.getElementById(id).style.display = "inline";
+        target[id].display = "inline";
     }
 	
 }
@@ -225,6 +258,7 @@ function init() {
 
 function buildIdTargets() {
 	let ts = document.querySelectorAll('*[id]');
+	target={};
 	for (let i=0; i<ts.length; i++){
 		target[ts[i].id] = ts[i];
 	}
@@ -262,30 +296,15 @@ function copyObject(obj) {
 
 // ----------------- audio routines
 function playSound(id){
-	let c = audios.children;
-	for (let i=0; i<c.length; i++){
-		if (c[i].id===id){
-			console.log(c[i]);
-			let audio = c[i];
-			if (!audio) return;
-			audio.currentTime = 0;
-			audio.play();
-		}
-	}
-	
+	target[id].pause();
+	if (!target[id]) return;
+	target[id].currentTime=0;
+	target[id].play();
 }
 
 function stopSound(id){
-	let c = audios.children;
-	for (let i=0; i<c.length; i++){
-		if (c[i].id===id){
-			console.log(c[i]);
-			let audio = c[i];
-			if (!audio) return;
-			audio.pause();
-			audio.currentTime = 0;
-		}
-	}
+	target[id].pause();
+	target[id].currentTime=0;
 }
 
 

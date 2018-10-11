@@ -125,6 +125,10 @@ video#openingVid {
   box-sizing: border-box;
 }
 
+.square:hover {
+	background-color: red;
+  }
+
 .square::before {
   content: "";
   display: block;
@@ -137,11 +141,33 @@ video#openingVid {
   left: 0;
   height: 100%;
   width: 100%;
+  padding-top: 50%;
 }
 
-.square .content:hover {
-  background-color: red;
+.square .top-row {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	line-height: 16px;
+	padding-top: 25%;
 }
+
+@media only screen and (max-width: 812px) {
+	.square {
+		font-size: 10px;
+	}
+	.square .content {
+		padding-top:25%;
+	}
+	.square .top-row {
+		padding-top: 1%;
+		line-height: 12px;
+	}
+}
+
+
 
 /* game animations------------------------------------------------- */
 .flash1 {
