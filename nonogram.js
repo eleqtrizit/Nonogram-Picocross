@@ -36,10 +36,11 @@ function startGame(length) {
 	stopSound('menuMusic');
 	playSound('menuSelect');
 	flashText('startGame'+length);
-    activateSection("play",500);
+	activateSection("play",500);
     activateVideoBG('none');
 	startTimer();
 }
+
 
 function elementsOnGrid() {
 	document.getElementById("elementsOnGrid").innerHTML =
@@ -215,6 +216,8 @@ function init() {
 	buildIdTargets();
 	var main = document.getElementById("main");
 	var audios = document.getElementById('audios');
+	var videos = document.getElementById('videos');
+	target['openingVid'].play();
 
 	// begin
 	activateSection("welcome");

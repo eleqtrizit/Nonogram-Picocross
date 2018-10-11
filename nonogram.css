@@ -2,15 +2,20 @@ body {
   background: rgb(16, 0, 59);
   color: rgb(255, 255, 255);
   font-size: 14px;
-  text-align:center;
-  font-family: 'Press Start 2P', cursive;
+  text-align: center;
+  font-family: "Press Start 2P", cursive;
+  color: yellow;
+  text-shadow:
+  #000 0px 0px 1px,   #000 0px 0px 1px,   #000 0px 0px 1px,
+  #000 0px 0px 1px,   #000 0px 0px 1px,   #000 0px 0px 1px;
+  
 }
 
 body > div {
-  margin:auto;
+  margin: auto;
 }
 
-video#openingVid { 
+video#openingVid {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -24,7 +29,7 @@ video#openingVid {
   -webkit-transform: translateX(-50%) translateY(-50%);
   transform: translateX(-50%) translateY(-50%);
   background: black;
-  background-size: cover; 
+  background-size: cover;
 }
 
 @media only screen and (min-width: 800px) {
@@ -32,7 +37,7 @@ video#openingVid {
     width: 800px;
     margin: auto;
   }
-} 
+}
 
 #header {
   display: flex;
@@ -82,39 +87,35 @@ video#openingVid {
 
 #menu > div > div > div {
   line-height: 35px;
-  cursor: pointer;
   margin-bottom: 50px;
   font-size: 35px;
 }
 
-
-@media only screen 
-and (min-device-width : 375px) 
-and (max-device-width : 812px) {
-	#menu > div {
-		margin-top: 0vh;
-	}
-	#menu > div > div > div {
-		font-size: 30px;
-	  }
+@media only screen and (min-device-width: 375px) and (max-device-width: 812px) {
+  #menu > div {
+    margin-top: 0vh;
+  }
+  #menu > div > div > div {
+    font-size: 30px;
+  }
 }
-
 
 /* game headers ------------------------------------------------- */
 #gameStats {
-	width: 100%;
+  width: 100%;
 }
 
 #play {
   display: block;
+  
 }
-
 
 /* game board---------------------------------------------------- */
 
 #board {
   display: flex;
   flex-wrap: wrap;
+  color:fuchsia;
 }
 
 .square {
@@ -144,18 +145,17 @@ and (max-device-width : 812px) {
 
 /* game animations------------------------------------------------- */
 .flash1 {
-	color: #ff00ff
+  color: #ff00ff;
 }
 .flash2 {
-	color:#00ffff
+  color: #00ffff;
 }
 .flash3 {
-	color:#0087ff
+  color: #0087ff;
 }
 .flash4 {
-	color: #0000ff
+  color: #0000ff;
 }
-
 
 /* slider --------------------------------------------------------- */
 

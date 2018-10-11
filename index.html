@@ -12,17 +12,21 @@
 </head>
 
 <body>
+
+
+
 	<div id="videos">
-		<video playsinline autoplay muted loop id="openingVid">
-			<source src="assets/opening3.mp4" type="video/webm">
-			<source src="assets/opening3.webm" type="video/mp4">
+		<video playsinline autoplay="autoplay" muted playsinline="playsinline" poster="assets/water.gif" muted loop id="openingVid">
+			<source src="assets/openng3.mp4" type="video/webm">
+			<source src="assets/openng3.webm" type="video/mp4">
 		</video>
 	</div>
+
 	<div id="audios">
-			<audio id="menuMusic" controls style="display:none" preload="auto">
-					<source src="assets/DiscoFever.mp3" type="audio/mpeg">
-					<source src="assets/DiscoFever.wav" type="audio/mpeg">
-				</audio>
+		<audio id="menuMusic" controls style="display:none" preload="auto">
+			<source src="assets/DiscoFever.mp3" type="audio/mpeg">
+			<source src="assets/DiscoFever.wav" type="audio/mpeg">
+		</audio>
 		<audio id="menuSelect" controls style="display:none" preload="auto">
 			<source src="assets/sfx_menu_select4_short.mp3" type="audio/mpeg">
 			<source src="assets/sfx_menu_select4_short.wav" type="audio/mpeg">
@@ -32,7 +36,7 @@
 
 	<div id="header">
 		<div>
-			Nonogram!
+			
 		</div>
 	</div>
 
@@ -45,26 +49,26 @@
 			</div>
 		</div>
 
-		<div id="menu">
+		<div id="menu" style="display:none">
 			<div>
 				<div class="slidecontainer" class="difficulty">
 					Difficulty:
 					<input type="range" min="1" max="100" value="50" class="slider" id="myDiff">
 				</div>
 
-				<div class="menuoptions">
+				<div>
 					<div>Start Game:</div>
-					<div onclick="startGame(7)" id="startGame7">
+					<div onclick="startGame(7)" id="startGame7" style="cursor: pointer;">
 						7x7
 					</div>
-					<div onclick="startGame(13)" id="startGame13">
+					<div onclick="startGame(13)" id="startGame13" style="cursor: pointer;">
 						13x3
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<div id="play">
+		<div id="play" style="display:none;">
 			<div id="gameStats">
 				<span id="timer"></span>
 				<span id="turns"></span>
