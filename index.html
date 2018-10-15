@@ -36,15 +36,14 @@
 
 	<div id="header">
 		<div>
-			
+
 		</div>
 	</div>
 
 	<div id="main">
-
-
 		<div id="welcome">
-			<div onclick="welcomeScreenGo()" id="welcomeScreenGo">
+			<div id="loadingText">Loading...</div>
+			<div onclick="welcomeScreenGo()" id="welcomeScreenGo" style="display: none">
 				Start Game
 			</div>
 		</div>
@@ -65,23 +64,59 @@
 						13x3
 					</div>
 				</div>
+				<div class="settingsLabel" onclick="gotoSettings()">Settings</div>
 			</div>
 		</div>
 
 		<div id="play" style="display:none;">
 			<div id="gameStats">
-				<span id="timer"></span>
-				<span id="turns"></span>
-				<span id="elementsOnGrid"></span>
+				<span id="timer" class="trackers"></span>
+				<span id="turns" class="trackers"></span>
+				<span id="errors" class="trackers"></span>
 			</div>
 			<div id="board"></div>
+			<div>
+				<span id="elementsOnGrid" class="trackers"></span>
+
+			</div>
 		</div>
 
-	</div>
+
+		<div id="settings">
+			<div id="gridoptions">Change the grid outline color:<br>
+				<span style="color: cyan" onclick="setGrid('cyan')" id="gridcyan">Cyan</span>
+				<span style="color: yellow" onclick="setGrid('yellow')" id="gridyellow">Yellow</span>
+				<span style="color: fuchsia" onclick="setGrid('fuchsia')" id="gridfuchsia">Fuchsia</span>
+				<span style="color: crimson" onclick="setGrid('crimson')" id="gridcrimson">Red</span>
+				<span style="color: darkorange" onclick="setGrid('darkorange')" id="griddarkorange">Orange</span>
+				<span style="color: limegreen" onclick="setGrid('limegreen')" id="gridlimegreen">Green</span>
+			</div>
+			<div id="blockoptions">Change the success block color:<br>
+				<span style="color: cyan" onclick="setSuccess('cyan')" id="blockcyan">Cyan</span>
+				<span style="color: yellow" onclick="setSuccess('yellow')" id="blockyellow">Yellow</span>
+				<span style="color: fuchsia" onclick="setSuccess('fuchsia')" id="blockfuchsia">Fuchsia</span>
+				<span style="color: crimson" onclick="setSuccess('crimson')" id="blockcrimson">Red</span>
+				<span style="color: darkorange" onclick="setSuccess('darkorange')" id="blockdarkorange">Orange</span>
+				<span style="color: limegreen" onclick="setSuccess('limegreen')" id="blocklimegreen">Green</span>
+			</div>
+			<div id="erroroptions">Change the error block color:<br>
+				<span style="color: cyan" onclick="setError('cyan')" id="errorcyan">Cyan</span>
+				<span style="color: yellow" onclick="setError('yellow')" id="erroryellow">Yellow</span>
+				<span style="color: fuchsia" onclick="setError('fuchsia')" id="errorfuchsia">Fuchsia</span>
+				<span style="color: crimson" onclick="setError('crimson')" id="errorcrimson">Red</span>
+				<span style="color: darkorange" onclick="setError('darkorange')" id="errordarkorange">Orange</span>
+				<span style="color: limegreen" onclick="setError('limegreen')" id="errorlimegreen">Green</span>
+			</div>
+			<div onclick="backToMenu()"" class="settingsLabel">
+				Return to Menu
+			</div>
+		</div>
 
 
 
-	<script src="nonogram.js" async defer></script>
+
+
+		<script src="nonogram.js" async defer></script>
 </body>
 
 </html>

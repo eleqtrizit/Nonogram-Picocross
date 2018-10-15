@@ -1,6 +1,4 @@
 body {
-  background: rgb(16, 0, 59);
-  color: rgb(255, 255, 255);
   font-size: 14px;
   text-align: center;
   font-family: "Press Start 2P", cursive;
@@ -110,12 +108,24 @@ video#openingVid {
   
 }
 
+#settings >div {
+  padding-bottom: 40px;
+  line-height: 24px;
+}
+.trackers {
+  padding-right: 30px;
+}
+
+.settingsLabel {
+  cursor: pointer;
+}
+
+
 /* game board---------------------------------------------------- */
 
 #board {
   display: flex;
   flex-wrap: wrap;
-  color:fuchsia;
 }
 
 .square {

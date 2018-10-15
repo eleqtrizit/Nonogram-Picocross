@@ -5,6 +5,12 @@ var difficulty = slider.value; // medium default
 var timerSeconds = 0;
 var target = {};
 var fromId = 'welcome';
+var pushMode = 'marked'; // alternative is X'ed, to indicate to mark
+var flexBasisCache;
+var turnCount=-1;
+var errorCount=-1;
+var successBlockColor = "background-color: cyan;"
+var errorBlockColor = "background-color: red;"
 
 var gameBoard = {
 	grid: [], // ultimately a 3d grid
@@ -45,8 +51,172 @@ function startGame(length) {
 	activateVideoBG('none');
 	console.log(gameBoard);
 	startTimer();
+	updateTurns();
+	updateErrors();
 }
 
+function backToMenu() {
+	activateVideoBG('openingVid');
+	activateSection('menu');
+}
+
+function gotoSettings(){
+	activateVideoBG('none');
+	activateSection('settings');
+}
+
+function elementsOnGrid() {
+	target['elementsOnGrid'].innerHTML =
+		"Elements on Grid: " + gameBoard.length * gameBoard.length;
+}
+
+function startTimer() {
+	target['timer'].innerHTML = "Timer: " + timerSeconds;
+	setInterval(function() {
+		timerSeconds++;
+		target['timer'].innerHTML = "Timer: " + timerSeconds;
+	}, 1000);
+}
+
+function setGameDifficulty(_difficulty) {
+	difficulty = _difficulty;
+}
+
+function updateTurns(){
+	target['turns'].innerHTML='Turns: ' + ++turnCount;
+}
+
+function updateErrors() {
+	target['errors'].innerHTML='Errors: ' + ++errorCount;
+}
+
+slider.oninput = function() {
+	difficulty = this.value;
+};
+
+
+function difficultyMarkup() {
+	// don't let difficulty get too low or high
+	let diff = 50;
+	if (difficulty < 25) {
+		diff = 25;
+	} else if (difficulty > 75) {
+		diff = 75;
+	} else {
+		diff = difficulty;
+	}
+	return diff;
+}
+
+function activateVideoBG(id) {
+	console.log("Activating background video: " + id);
+    let c = videos.children;
+	for (let i = 0; i < c.length; i++) {
+		if (c[i].id != "")
+			target[c[i].id].style.display = "none";
+	}
+
+    if (id !== 'none') {
+        target[id].style.display = "inline";
+    }
+	
+}
+
+function activateSection(id, delayUntilChangover = 0) {
+	console.log("Activating section: " + id);
+
+	let changeOver = function(){
+		let c = main.children;
+		for (let i = 0; i < c.length; i++) {
+			if (c[i].id != "")
+				document.getElementById(c[i].id).style.display = "none";
+		}
+		document.getElementById(id).style.display = "inline";
+	}
+
+	setTimeout(changeOver, delayUntilChangover);
+	fromId=id;
+}
+
+function pushSquare(i,j) {
+	updateTurns();
+	console.log(i + ' ' + j);
+	let x=i-1;
+	let y=j-1;
+	if (pushMode==='marked') {
+		if (gameBoard.grid[x][y].isUsed) {
+			gameBoard.grid[x][y].isDisplayed=true;
+			target[i+'|'+j].style = flexBasisCache + successBlockColor;
+		}
+		else {
+			updateErrors();
+			gameBoard.grid[x][y].isDisplayed=true;
+			target[i+'|'+j].style = flexBasisCache + errorBlockColor;
+		}
+	}
+}
+
+
+// ---------------- settings
+function setGrid(colour){
+	target["board"].style.color=colour;
+	let t="grid"+colour;
+	// clear previous underlines before setting a new one
+	let c = target['gridoptions'].children;
+	for (let i=0; i<c.length; i++) {
+		c[i].style.textDecoration = "none";
+	}
+	target[t].style.textDecoration="underline";
+	switch(colour) {
+		case 'cyan':
+			document.body.style.background = '#000033';
+			break;
+		case 'yellow':
+			document.body.style.background = '#222200';
+			break;
+		case 'fuchsia':
+			document.body.style.background = '#10003b';
+			break;
+		case 'crimson':
+			document.body.style.background = '#110000';
+			break;
+		case 'darkorange':
+			document.body.style.background = '#111100';
+			break;
+		case 'limegreen':
+			document.body.style.background = '#001100';
+			break;
+		default:
+			document.body.style.background = '#10003b';
+	}
+}
+
+function setSuccess(colour) {
+	let t="block"+colour;
+	// clear previous underlines before setting a new one
+	let c = target['blockoptions'].children;
+	for (let i=0; i<c.length; i++) {
+		c[i].style.textDecoration = "none";
+	}
+
+	target[t].style.textDecoration="underline";
+	successBlockColor = "background-color: " + colour + ";";
+}
+
+function setError(colour) {
+	let t="error"+colour;
+	// clear previous underlines before setting a new one
+	let c = target['erroroptions'].children;
+	for (let i=0; i<c.length; i++) {
+		c[i].style.textDecoration = "none";
+	}
+	
+	target[t].style.textDecoration="underline";
+	errorBlockColor = "background-color: " + colour + ";";
+}
+
+
+// ---------------- board generation
 function writeColStreaksToGrid() {
 	for (let i=0; i<gameBoard.colStreaks.length; i++){
 		let t = '';
@@ -55,7 +225,13 @@ function writeColStreaksToGrid() {
 		}
 		let offset=i+1;
 		let id= offset + '|0';
-		target[id].children[0].innerHTML=t;
+		if (t.length===0) {
+			target[id].children[0].innerHTML=0;
+		}
+		else {
+			target[id].children[0].innerHTML=t;
+		}
+		
 		
 	}
 }
@@ -68,27 +244,9 @@ function writeRowStreaksToGrid() {
 		}
 		let offset=i+1;
 		let id= '0|'+offset;
-		console.log(id);
 		target[id].children[0].innerHTML=t;
 		target[id].children[0].className='top-row';
 	}
-}
-
-function elementsOnGrid() {
-	document.getElementById("elementsOnGrid").innerHTML =
-		"Elements on Grid: " + gameBoard.length * gameBoard.length;
-}
-
-function startTimer() {
-	document.getElementById("timer").innerHTML = "Timer: " + timerSeconds;
-	setInterval(function() {
-		timerSeconds++;
-		document.getElementById("timer").innerHTML = "Timer: " + timerSeconds;
-	}, 1000);
-}
-
-function setGameDifficulty(_difficulty) {
-	difficulty = _difficulty;
 }
 
 // this seems redudant now but future features might add to this
@@ -96,13 +254,18 @@ function createGameBoardHTML(length) {
 	let board = document.getElementById("board");
 	let l = gameBoard.length + 1; // +1 for hints areas
 	let width = 100 / l;
+	flexBasisCache = "flex-basis: calc(" + width + "% - 4px);";
 
 	for (let i = 0; i < l; i++) {
 		for (let j = 0; j < l; j++) {
 			var square = document.createElement("div");
 			square.id = i + "|" + j;
 			square.className = "square";
-			square.style = "flex-basis: calc(" + width + "% - 4px);";
+			square.style = flexBasisCache;
+			
+			square.onclick = function(){
+				pushSquare(i,j);
+			};
 
 			var sqContent = document.createElement("div");
 			sqContent.className = "content";
@@ -186,10 +349,6 @@ function countStreaks() {
 	}
 }
 
-slider.oninput = function() {
-	difficulty = this.value;
-};
-
 function isUsedSquare() {
 	// randomize the usage of a square, plus add some difficulty from the slider
 	let p = Math.floor(Math.random() * 100) / 100;
@@ -201,59 +360,52 @@ function isUsedSquare() {
 	}
 }
 
-function difficultyMarkup() {
-	// don't let difficulty get too low or high
-	let diff = 50;
-	if (difficulty < 25) {
-		diff = 25;
-	} else if (difficulty > 75) {
-		diff = 75;
-	} else {
-		diff = difficulty;
-	}
-	return diff;
-}
+// ---------------- initialization and preloading
 
-function activateVideoBG(id) {
-	console.log("Activating background video: " + id);
-    let c = videos.children;
-	for (let i = 0; i < c.length; i++) {
-		if (c[i].id != "")
-			target[c[i].id].style.display = "none";
-	}
-
-    if (id !== 'none') {
-        target[id].display = "inline";
-    }
-	
-}
-
-function activateSection(id, delayUntilChangover = 0) {
-	console.log("Activating section: " + id);
-
-	let changeOver = function(){
-		let c = main.children;
-		for (let i = 0; i < c.length; i++) {
-			if (c[i].id != "")
-				document.getElementById(c[i].id).style.display = "none";
-		}
-		document.getElementById(id).style.display = "inline";
-	}
-
-	setTimeout(changeOver, delayUntilChangover);
-	fromId=id;
-}
 
 function init() {
-	// preload for performance
+	// preload for performance and almost must come first!
 	buildIdTargets();
+	// set initial color scheme
+	setGrid('fuchsia');
 	var main = document.getElementById("main");
 	var audios = document.getElementById('audios');
 	var videos = document.getElementById('videos');
 	target['openingVid'].play();
-
+	preLoad();
 	// begin
 	activateSection("welcome");
+}
+
+var audioFiles = [
+	"assets/DiscoFever.mp3",
+	"assets/sfx_menu_select4_short.mp3"
+];
+
+function preLoad() {	
+	for (var i in audioFiles) {
+		preloadAudio(audioFiles[i]);
+	}
+}
+
+function preloadAudio(url) {
+	var audio = new Audio();
+	// once this file loads, it will call loadedAudio()
+	// the file will be kept by the browser as cache
+	audio.addEventListener('canplaythrough', loadedAudio, false);
+	audio.src = url;
+}
+	
+var loaded = 0;
+function loadedAudio() {
+	// this will be called every time an audio file is loaded
+	// we keep track of the loaded files vs the requested files
+	loaded++;
+	if (loaded == audioFiles.length){
+		// all have loaded
+		target['loadingText'].style="display: none";
+		target['welcomeScreenGo'].style ="display: block";
+	}
 }
 
 function buildIdTargets() {
