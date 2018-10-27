@@ -53,17 +53,17 @@ video#openingVid {
   height: 90vh;
 }
 
-#welcome {
+#welcomeScreenGo {
   display: flex;
   justify-content: center;
 }
 
-#welcome > div {
+#welcomeScreenGo > div {
   width: auto;
   margin-top: 20vh;
   text-align: center;
-  line-height: 75px;
-  font-size: 60px;
+  line-height: 55px;
+  font-size: 40px;
 }
 
 #menu {
@@ -96,6 +96,16 @@ video#openingVid {
   #menu > div > div > div {
     font-size: 30px;
   }
+}
+
+.youWonOrLost {
+  font-size: 40px;
+  padding-bottom: 20px;
+}
+
+#stats {
+  line-height: 45px;
+  font-size: 20px;
 }
 
 /* game headers ------------------------------------------------- */

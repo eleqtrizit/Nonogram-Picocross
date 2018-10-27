@@ -31,6 +31,14 @@
 			<source src="assets/sfx_menu_select4_short.mp3" type="audio/mpeg">
 			<source src="assets/sfx_menu_select4_short.wav" type="audio/mpeg">
 		</audio>
+		<audio id="rightSound" controls style="display:none" preload="auto">
+			<source src="assets/right.mp3" type="audio/mpeg">
+			<source src="assets/right.wav" type="audio/mpeg">
+		</audio>
+		<audio id="wrongSound" controls style="display:none" preload="auto">
+			<source src="assets/wrong.mp3" type="audio/mpeg">
+			<source src="assets/wrong.wav" type="audio/mpeg">
+		</audio>
 
 	</div>
 
@@ -41,13 +49,10 @@
 	</div>
 
 	<div id="main">
-		<div id="welcome">
-			<div id="loadingText">Loading...</div>
-			<div onclick="welcomeScreenGo()" id="welcomeScreenGo" style="display: none">
-				Start Game
-			</div>
+		<div id="welcomeScreenGo" onclick="beginLoading()" style="display:block">
+			<div>NONOGRAM</div>
+			<div>Start Game</div>
 		</div>
-
 		<div id="menu" style="display:none">
 			<div>
 				<div class="slidecontainer" class="difficulty">
@@ -81,8 +86,14 @@
 			</div>
 		</div>
 
+		<div id="gameOver" style="display: none">
+			<div id="youWon" style="display: none" class="youWonOrLost">You Won!</div>
+			<div id="youLost" style="display: none" class="youWonOrLost">You Lost</div>
+			<div id="stats"></div>
+		</div>
 
-		<div id="settings">
+
+		<div id="settings" style="display:none;">
 			<div id="gridoptions">Change the grid outline color:<br>
 				<span style="color: cyan" onclick="setGrid('cyan')" id="gridcyan">Cyan</span>
 				<span style="color: yellow" onclick="setGrid('yellow')" id="gridyellow">Yellow</span>
@@ -107,7 +118,7 @@
 				<span style="color: darkorange" onclick="setError('darkorange')" id="errordarkorange">Orange</span>
 				<span style="color: limegreen" onclick="setError('limegreen')" id="errorlimegreen">Green</span>
 			</div>
-			<div onclick="backToMenu()"" class="settingsLabel">
+			<div onclick="backToMenu()"" class=" settingsLabel">
 				Return to Menu
 			</div>
 		</div>

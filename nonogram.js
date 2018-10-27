@@ -9,8 +9,8 @@ var pushMode = 'marked'; // alternative is X'ed, to indicate to mark
 var flexBasisCache;
 var turnCount=-1;
 var errorCount=-1;
-var successBlockColor = "background-color: cyan;"
-var errorBlockColor = "background-color: red;"
+var successBlockColor = "background-color: cyan;";
+var errorBlockColor = "background-color: red;";
 
 var gameBoard = {
 	grid: [], // ultimately a 3d grid
@@ -28,12 +28,14 @@ var square = {
 	isDisplayed: false
 };
 
-function welcomeScreenGo(){
-	playSound('menuMusic') ;
+function beginLoading() {
+	preLoad();
+	playSound('menuMusic');
 	playSound('menuSelect');
 	flashText('welcomeScreenGo'); 
 	activateSection('menu',500);
 }
+
 
 // !!!! add check for empty rows/cols and regenerate
 
@@ -49,6 +51,7 @@ function startGame(length) {
 	flashText('startGame'+length);
 	activateSection("play",500);
 	activateVideoBG('none');
+	
 	console.log(gameBoard);
 	startTimer();
 	updateTurns();
@@ -112,7 +115,7 @@ function activateVideoBG(id) {
 	console.log("Activating background video: " + id);
     let c = videos.children;
 	for (let i = 0; i < c.length; i++) {
-		if (c[i].id != "")
+		if (c[i].id !== "")
 			target[c[i].id].style.display = "none";
 	}
 
@@ -128,7 +131,7 @@ function activateSection(id, delayUntilChangover = 0) {
 	let changeOver = function(){
 		let c = main.children;
 		for (let i = 0; i < c.length; i++) {
-			if (c[i].id != "")
+			if (c[i].id !== "")
 				document.getElementById(c[i].id).style.display = "none";
 		}
 		document.getElementById(id).style.display = "inline";
@@ -147,12 +150,31 @@ function pushSquare(i,j) {
 		if (gameBoard.grid[x][y].isUsed) {
 			gameBoard.grid[x][y].isDisplayed=true;
 			target[i+'|'+j].style = flexBasisCache + successBlockColor;
+			target["rightSound"].play();
 		}
 		else {
 			updateErrors();
 			gameBoard.grid[x][y].isDisplayed=true;
 			target[i+'|'+j].style = flexBasisCache + errorBlockColor;
+			target["wrongSound"].play();
 		}
+	}
+
+	isGameOver();
+}
+
+function isGameOver(){
+	if (turnCount===gameBoard.length){
+		target["stats"].innerHTML = `
+		Turns: ${turnCount} <br>
+		Errors: ${errorCount} <br>
+		`;
+
+		target['youWon'].style.display='block';
+		activateSection('gameOver');
+	}
+	else {
+		console.log(turnCount + ' vs ' + gameBoard.length);
 	}
 }
 
@@ -231,8 +253,6 @@ function writeColStreaksToGrid() {
 		else {
 			target[id].children[0].innerHTML=t;
 		}
-		
-		
 	}
 }
 
@@ -313,7 +333,7 @@ function countStreaks() {
 		for (let j = 0; j < l; j++) {
 			// cols
 			// count up the consecutive marked spaces
-			if (gameBoard.grid[i][j].isUsed == true) {
+			if (gameBoard.grid[i][j].isUsed === true) {
 				colStreak++;
 			} else {
 				// streak of marked spaces ended, push to array
@@ -325,7 +345,7 @@ function countStreaks() {
 
 			// rows   just swap j and i - genius!
 			// count up the consecutive marked spaces
-			if (gameBoard.grid[j][i].isUsed == true) {
+			if (gameBoard.grid[j][i].isUsed === true) {
 				rowStreak++;
 			} else {
 				// streak of marked spaces ended, push to array
@@ -368,14 +388,20 @@ function init() {
 	buildIdTargets();
 	// set initial color scheme
 	setGrid('fuchsia');
-	var main = document.getElementById("main");
-	var audios = document.getElementById('audios');
-	var videos = document.getElementById('videos');
+	
 	target['openingVid'].play();
-	preLoad();
+	
 	// begin
-	activateSection("welcome");
+	activateSection("welcomeScreenGo");
+
+	// deactivate the 13x13 grid for mobile devices
+	var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+	var android  = !!navigator.platform && /android/.test(navigator.platform);
+	if (iOS || android){
+		target["startGame13"].style.display = "none";
+	}
 }
+
 
 var audioFiles = [
 	"assets/DiscoFever.mp3",
@@ -401,10 +427,8 @@ function loadedAudio() {
 	// this will be called every time an audio file is loaded
 	// we keep track of the loaded files vs the requested files
 	loaded++;
-	if (loaded == audioFiles.length){
+	if (loaded === audioFiles.length){
 		// all have loaded
-		target['loadingText'].style="display: none";
-		target['welcomeScreenGo'].style ="display: block";
 	}
 }
 
@@ -414,12 +438,14 @@ function buildIdTargets() {
 	for (let i=0; i<ts.length; i++){
 		target[ts[i].id] = ts[i];
 	}
+	var main = document.getElementById("main");
+	var audios = document.getElementById('audios');
+	var videos = document.getElementById('videos');
 }
 
 
 // ---------------- animations
 function flashText(id,animDelay=50,repeat=1){
-
 	setTimeout(function(){
 		target[id].className='flash1';
 	}, 0);
@@ -469,8 +495,12 @@ function showGridInConsole() {
 	for (let i = 0; i < l; i++) {
 		let colText = "";
 		for (let j = 0; j < l; j++) {
-			colText += gameBoard.grid[i][j].isUsed;
-			colText += " ";
+			if (gameBoard.grid[i][j].isUsed){
+				colText += 'T '
+			}
+			else {
+				colText += 'F ';
+			}
 		}
 		console.log(colText);
 	}
