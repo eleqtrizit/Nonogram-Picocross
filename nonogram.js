@@ -1,7 +1,7 @@
 "use strict";
 
 var slider = document.getElementById("myDiff");
-var difficulty = slider.value; // medium default
+var difficulty =  1 //slider.value; // medium default
 var timerSeconds = 0;
 var target = {};
 var fromId = 'welcome';
@@ -93,10 +93,11 @@ function updateErrors() {
 	target['errors'].innerHTML='Errors: ' + ++errorCount;
 }
 
+/*
 slider.oninput = function() {
 	difficulty = this.value;
 };
-
+*/
 
 function difficultyMarkup() {
 	// don't let difficulty get too low or high

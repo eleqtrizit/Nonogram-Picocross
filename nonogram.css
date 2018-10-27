@@ -3,6 +3,7 @@ body {
   text-align: center;
   font-family: "Press Start 2P", cursive;
   color: yellow;
+  background-color: black;
   text-shadow:
   #000 0px 0px 1px,   #000 0px 0px 1px,   #000 0px 0px 1px,
   #000 0px 0px 1px,   #000 0px 0px 1px,   #000 0px 0px 1px;

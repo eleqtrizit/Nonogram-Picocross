@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title></title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="nonogram.css">
+	</head>
+	<body>
+		<div id="main">
+			<div id="menu">
+				<div>
+						<div>Choose board to edit</div>
+						<div onclick="edit(7)">7x7</div>
+						<div onclick="edit(13)">13x13</div>
+				</div>
+				
+			</div>
+			<div id="play" style="display:none;">
+					<div id="board"></div>
+					<div>
+						<br><br>
+						Name of Board:<br>
+						<input type="text" id="boardName" value="" size="20">
+						<br><br>
+						<button onclick="saveToServer()"> SAVE </button><Br><br>
+						<button onclick="reload()"> Clear </button> <br><br>
+						<button onclick="test()"> TEST </button>
+					</div>
+			</div>
+			
+		</div>
+		<script src="level_creator.js" async defer></script>
+	</body>
+</html>
