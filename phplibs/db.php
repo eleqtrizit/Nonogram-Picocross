@@ -113,24 +113,26 @@ class NONOData
         return $nono->Get("select * from players where username='$username';");
     }
 
-    public function GetLevel(){
+    public function GetLevel($id){
 	    $nono = new db($this->returnType);
-        return $nono->Get("select * from levels where id=0;");
+        return $nono->Get("select id,name,levelblob from levels where id=$id");
     }
 
-    public function GetGames($id) {
+    public function GetLevelType($gridType){
 	    $nono = new db($this->returnType);
-        return $nono->Get("select * from games where id=0;");
+        return $nono->Get("select id,name,levelblob,gridType from levels where gridType=$gridType order by id desc limit 3;");
     }
 
-    public function FindStudentByPhone($phone) {
+    public function ListLevels() {
         $nono = new db($this->returnType);
-        // strip anything that is not a number
-        $normalizedPhone = preg_replace("/[^0-9]/", "", $phone);
-        if (strlen($normalizedPhone)==10) {
-            return $nono->Get("select * from students where phoneNumber='$normalizedPhone'");
-        }
+        return $nono->Get("select id,name,gridType from levels");
     }
+
+    public function GetGame($id) {
+	    $nono = new db($this->returnType);
+        return $nono->Get("select * from games where id=$id;");
+    }
+
     public function InsertLevel($name,$gameBoard,$length) {
 		$nono = new db($this->returnType);
         $max = $nono->Get("select coalesce(max(id)+1,0) as max from levels;"); 
@@ -138,12 +140,15 @@ class NONOData
         while ($row = $max->fetch_assoc()) {
             $maxx = $row["max"];
             $query="insert into levels values($maxx,'$name','$board',$length)";
-            echo $nono->Insert($query);
+            return $nono->Insert($query);
         }
-        
-        
-        //var_dump($query);
-        //$nono->Insert($query);
+    }
+
+    public function ResaveLevel($id,$name,$gameBoard,$length) {
+        $nono = new db($this->returnType);
+        $board = json_encode($gameBoard);
+        $nono->Get("delete from levels where id=$id"); // delete old copy
+        $nono->Insert("insert into levels values($id,'$name','$board',$length)");   
     }
 
     public function DeleteBuilding($schoolID,$buildingID) {

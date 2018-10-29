@@ -12,17 +12,7 @@
 </head>
 
 <body>
-
-
-
-	<div id="videos">
-		<video playsinline autoplay="autoplay" muted playsinline="playsinline" poster="assets/water.gif" muted loop id="openingVid">
-			<source src="assets/openng3.mp4" type="video/webm">
-			<source src="assets/openng3.webm" type="video/mp4">
-		</video>
-	</div>
-
-	<div id="audios">
+	<div id="audios" style="display:none">
 		<audio id="menuMusic" controls style="display:none" preload="auto">
 			<source src="assets/DiscoFever.mp3" type="audio/mpeg">
 			<source src="assets/DiscoFever.wav" type="audio/mpeg">
@@ -39,27 +29,45 @@
 			<source src="assets/wrong.mp3" type="audio/mpeg">
 			<source src="assets/wrong.wav" type="audio/mpeg">
 		</audio>
+		<audio id="levelWon" controls style="display:none" preload="auto">
+			<source src="assets/levelWon.mp3" type="audio/mpeg">
+			<source src="assets/levelWon.wav" type="audio/mpeg">
+		</audio>
+		<audio id="gameWon1" controls style="display:none" preload="auto">
+			<source src="assets/RoundandRound.mp3" type="audio/mpeg">
+			<source src="assets/RoundandRound.wav" type="audio/mpeg">
+		</audio>
+		<audio id="gameWon2" controls style="display:none" preload="auto">
+			<source src="assets/FantasticVoyage.mp3" type="audio/mpeg">
+			<source src="assets/FantasticVoyage.wav" type="audio/mpeg">
+		</audio>
+		<audio id="gameWonAll" controls style="display:none" preload="auto">
+			<source src="assets/RockTheCasbah.mp3" type="audio/mpeg">
+			<source src="assets/RockTheCasbah.wav" type="audio/mpeg">
+		</audio>
 
 	</div>
 
-	<div id="header">
-		<div>
+	<!--
+		If you're wondering why there are apparently useless divs below, it's because they are necessary to the CSS I'm
+		using to vertically align the text.  I'm using display:table and display:table-cell.  The useless div is a table-cell.
+		I then stick in the text I want inside more divs in that, so it'll all be vertically aligned.
 
-		</div>
-	</div>
+		I couldn't just attach it to the parent div because it also has it's own display type of flex.
+	-->
 
 	<div id="main">
-		<div id="welcomeScreenGo" onclick="beginLoading()" style="display:block">
-			<div>NONOGRAM</div>
-			<div>Start Game</div>
+		<div id="welcomeScreenGo">
+			<div class="centerlarge">
+				<div>
+					<div>NONOGRAM</div>
+					<div onclick="beginLoading()" id="startGame">Start Game</div>
+				</div>
+			</div>
+
 		</div>
 		<div id="menu" style="display:none">
-			<div>
-				<div class="slidecontainer" class="difficulty">
-					Difficulty:
-					<input type="range" min="1" max="100" value="50" class="slider" id="myDiff">
-				</div>
-
+			<div class="centermedium">
 				<div>
 					<div>Start Game:</div>
 					<div onclick="startGame(7)" id="startGame7" style="cursor: pointer;">
@@ -68,28 +76,53 @@
 					<div onclick="startGame(13)" id="startGame13" style="cursor: pointer;">
 						13x3
 					</div>
+					<div class="settingsLabel" onclick="gotoSettings()">Settings</div>
 				</div>
-				<div class="settingsLabel" onclick="gotoSettings()">Settings</div>
+
 			</div>
+
 		</div>
 
 		<div id="play" style="display:none;">
-			<div id="gameStats">
-				<span id="timer" class="trackers"></span>
-				<span id="turns" class="trackers"></span>
-				<span id="errors" class="trackers"></span>
+			<div class="centersmall">
+				<div>
+					<div id="gameStats">
+						<span id="timer" class="trackers"></span>
+						<span id="turns" class="trackers"></span>
+						<span id="errors" class="trackers"></span>
+					</div>
+					<div id="board"></div>
+					<div>
+						<span id="elementsOnGrid" class="trackers"></span>
+					</div>
+				</div>
 			</div>
-			<div id="board"></div>
-			<div>
-				<span id="elementsOnGrid" class="trackers"></span>
 
-			</div>
 		</div>
 
 		<div id="gameOver" style="display: none">
-			<div id="youWon" style="display: none" class="youWonOrLost">You Won!</div>
-			<div id="youLost" style="display: none" class="youWonOrLost">You Lost</div>
-			<div id="stats"></div>
+			<div class="centermedium">
+				<div>
+					<div id="youWon" style="display: none; margin-top: 20vh;" class="large">
+						<div style="margin-bottom: 50px;">You won!</div>
+						<div id="nextLevel" style="cursor: pointer" onclick="nextLevel()">Go to next level</div>
+					</div>
+					<div id="youLost" style="display: none" class="youWonOrLost">You Lost</div>
+					<div id="stats"></div>
+				</div>
+			</div>
+
+		</div>
+
+		<div id="rollCredits" style="display: none">
+			<div class="centermedium">
+				<div>
+					<div>
+						You beat the game! <br><br>
+						Congrats!
+					</div>
+				</div>
+			</div>
 		</div>
 
 

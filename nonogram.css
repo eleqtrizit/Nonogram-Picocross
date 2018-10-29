@@ -1,168 +1,201 @@
+html {
+	height: 100%;
+}
+
 body {
-  font-size: 14px;
-  text-align: center;
-  font-family: "Press Start 2P", cursive;
-  color: yellow;
-  background-color: black;
-  text-shadow:
-  #000 0px 0px 1px,   #000 0px 0px 1px,   #000 0px 0px 1px,
-  #000 0px 0px 1px,   #000 0px 0px 1px,   #000 0px 0px 1px;
-  
+	/* line below fixed weird background issues where it wasn't stretching edge to edge*/
+	margin: 0 auto;
+	min-height: 100%;
+	font-size: 14px;
+	text-align: center;
+	font-family: "Press Start 2P", cursive;
+	color: yellow;
+	background-color: black;
+	text-shadow: #000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px,
+		#000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px;
 }
 
 body > div {
-  margin: auto;
+	margin: auto;
 }
 
 video#openingVid {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
-  z-index: -100;
-  -ms-transform: translateX(-50%) translateY(-50%);
-  -moz-transform: translateX(-50%) translateY(-50%);
-  -webkit-transform: translateX(-50%) translateY(-50%);
-  transform: translateX(-50%) translateY(-50%);
-  background: black;
-  background-size: cover;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	min-width: 100%;
+	min-height: 100%;
+	width: auto;
+	height: auto;
+	z-index: -100;
+	-ms-transform: translateX(-50%) translateY(-50%);
+	-moz-transform: translateX(-50%) translateY(-50%);
+	-webkit-transform: translateX(-50%) translateY(-50%);
+	transform: translateX(-50%) translateY(-50%);
+	background: black;
+	background-size: cover;
 }
 
 @media only screen and (min-width: 800px) {
-  body {
-    width: 800px;
-    margin: auto;
-  }
+	body {
+		width: 800px;
+		margin: auto;
+	}
+}
+
+input {
+	text-align: center;
 }
 
 #header {
-  display: flex;
-  justify-content: center;
+	display: flex;
+	justify-content: center;
 }
 
 #header > div {
-  height: 10vh;
-  width: auto;
-  text-align: center;
-  font-size: 30px;
+	height: 10vh;
+	width: auto;
+	text-align: center;
+	font-size: 30px;
 }
 
 #main {
-  height: 90vh;
+	height: 100%;
 }
 
 #welcomeScreenGo {
-  display: flex;
-  justify-content: center;
-}
-
-#welcomeScreenGo > div {
-  width: auto;
-  margin-top: 20vh;
-  text-align: center;
-  line-height: 55px;
-  font-size: 40px;
+	display: flex;
+	justify-content: center;
 }
 
 #menu {
-  display: flex;
-  justify-content: center;
+	display: flex;
+	justify-content: center;
 }
 
-#menu > div {
-  width: auto;
-  margin-top: 20vh;
-  text-align: center;
-  font-size: 25px;
-  line-height: 40px;
+.editorOptions {
+	width: auto;
+	margin-top: 2vh;
+	text-align: center;
+	font-size: 25px;
+	line-height: 60px;
 }
 
-#menu > div > div {
-  margin-bottom: 100px;
+.back {
+	font-size: 20px;
 }
 
-#menu > div > div > div {
-  line-height: 35px;
-  margin-bottom: 50px;
-  font-size: 35px;
+.boardname {
+	font-size: 20px;
+	line-height: 20px;
 }
 
-@media only screen and (min-device-width: 375px) and (max-device-width: 812px) {
-  #menu > div {
-    margin-top: 0vh;
-  }
-  #menu > div > div > div {
-    font-size: 30px;
-  }
+.centerlarge {
+	font-size: 40px;
+	padding-bottom: 20px;
+	display: table;
+	min-height: 80vh;
+	width: 100%;
+	text-align: center;
 }
 
-.youWonOrLost {
-  font-size: 40px;
-  padding-bottom: 20px;
+.centerlarge > div {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.centerlarge > div > div {
+	padding-bottom: 120px;
+	line-height: 80px;
+}
+
+.centermedium {
+	font-size: 40px;
+	padding-bottom: 20px;
+	display: table;
+	min-height: 80vh;
+	width: 100%;
+	text-align: center;
+}
+
+.centermedium > div {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.centermedium > div > div {
+	padding-bottom: 50px;
+	line-height: 60px;
+}
+
+.centersmall {
+	font-size: 18px;
+	display: table;
+	min-height: 80vh;
+	width: 100%;
+	text-align: center;
+}
+
+.centersmall > div {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+@media only screen and (max-width: 812px) {
+	.centersmall {
+		font-size: 10px;
+	}
 }
 
 #stats {
-  line-height: 45px;
-  font-size: 20px;
+	line-height: 45px;
+	font-size: 20px;
 }
 
 /* game headers ------------------------------------------------- */
-#gameStats {
-  width: 100%;
-}
-
-#play {
-  display: block;
-  
-}
-
-#settings >div {
-  padding-bottom: 40px;
-  line-height: 24px;
+#settings > div {
+	padding-bottom: 40px;
+	line-height: 24px;
 }
 .trackers {
-  padding-right: 30px;
+	padding-right: 30px;
 }
 
 .settingsLabel {
-  cursor: pointer;
+	cursor: pointer;
 }
-
 
 /* game board---------------------------------------------------- */
 
 #board {
-  display: flex;
-  flex-wrap: wrap;
+	display: flex;
+	flex-wrap: wrap;
 }
 
 .square {
-  position: relative;
-  margin: 2px;
-  border: 1px solid;
-  box-sizing: border-box;
+	position: relative;
+	margin: 2px;
+	border: 1px solid;
+	box-sizing: border-box;
 }
 
 .square:hover {
 	background-color: red;
-  }
+}
 
 .square::before {
-  content: "";
-  display: block;
-  padding-top: 100%;
+	content: "";
+	display: block;
+	padding-top: 100%;
 }
 
 .square .content {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  padding-top: 50%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	padding-top: 50%;
 }
 
 .square .top-row {
@@ -180,7 +213,7 @@ video#openingVid {
 		font-size: 10px;
 	}
 	.square .content {
-		padding-top:25%;
+		padding-top: 25%;
 	}
 	.square .top-row {
 		padding-top: 1%;
@@ -188,58 +221,42 @@ video#openingVid {
 	}
 }
 
-
-
 /* game animations------------------------------------------------- */
 .flash1 {
-  color: #ff00ff;
+	color: #ff00ff;
 }
 .flash2 {
-  color: #00ffff;
+	color: #00ffff;
 }
 .flash3 {
-  color: #0087ff;
+	color: #0087ff;
 }
 .flash4 {
-  color: #0000ff;
+	color: #0000ff;
 }
 
-/* slider --------------------------------------------------------- */
-
-.slidecontainer {
-  width: 100%;
+@-webkit-keyframes levelWon {
+	0% {
+		background-color: black;
+		opacity: 1;
+	}
+	25% {
+		background-color: cyan;
+	}
+	50% {
+		background-color: magenta;
+	}
+	75% {
+		background-color: dodgerblue;
+	}
+	100% {
+		background-color: black;
+	}
 }
 
-.slider {
-  -webkit-appearance: none;
-  width: 70%;
-  height: 15px;
-  border-radius: 5px;
-  background: #00b1f7;
-  outline: none;
-  opacity: 0.7;
-  -webkit-transition: 0.2s;
-  transition: opacity 0.2s;
-}
-
-.slider:hover {
-  opacity: 1;
-}
-
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: rgb(153, 0, 255);
-  cursor: pointer;
-}
-
-.slider::-moz-range-thumb {
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  background: rgb(153, 0, 255);
-  cursor: pointer;
+.levelWon {
+	-webkit-animation-name: levelWon;
+	-webkit-animation-duration: 250ms;
+	-webkit-animation-iteration-count: 4;
+	-webkit-animation-timing-function: ease-in-out;
 }

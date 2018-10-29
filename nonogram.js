@@ -1,22 +1,24 @@
 "use strict";
 
-var slider = document.getElementById("myDiff");
-var difficulty =  1 //slider.value; // medium default
 var timerSeconds = 0;
 var target = {};
-var fromId = 'welcome';
-var pushMode = 'marked'; // alternative is X'ed, to indicate to mark
+var fromId = "welcome";
+var pushMode = "marked"; // alternative is X'ed, to indicate to mark
 var flexBasisCache;
-var turnCount=-1;
-var errorCount=-1;
+var turnCount = -1;
+var errorCount = -1;
 var successBlockColor = "background-color: cyan;";
 var errorBlockColor = "background-color: red;";
+var level = 0;
+var levelData = {};
+
+var noop = function() {}; // do nothing.
 
 var gameBoard = {
+	name: "",
 	grid: [], // ultimately a 3d grid
 	rowStreaks: [], // [i]=[]
 	colStreaks: [], // [i]=[]
-	diff: 50, // default
 	totalUsedSquares: 0,
 	length: 0
 };
@@ -28,30 +30,53 @@ var square = {
 	isDisplayed: false
 };
 
-function beginLoading() {
-	preLoad();
-	playSound('menuMusic');
-	playSound('menuSelect');
-	flashText('welcomeScreenGo'); 
-	activateSection('menu',500);
+function resetBoard() {
+	timerSeconds = 0;
+	turnCount = -1;
+	errorCount = -1;
 }
 
-
-// !!!! add check for empty rows/cols and regenerate
-
+function beginLoading() {
+	preLoad();
+	playSound("menuMusic");
+	playSound("menuSelect");
+	flashText("startGame");
+	activateSection("menu", 500);
+}
 
 function startGame(length) {
-	generateGrid(length);
+	loadLevels(length, function() {
+		resetBoard();
+		chooseLevel();
+		createGameBoardHTML(length);
+		writeColStreaksToGrid();
+		writeRowStreaksToGrid();
+		elementsOnGrid();
+		stopSound("menuMusic");
+		playSound("menuSelect");
+		flashText("startGame" + length);
+		activateSection("play", 500);
+		activateVideoBG("none");
+
+		console.log(gameBoard);
+		startTimer();
+		updateTurns();
+		updateErrors();
+	});
+}
+
+function nextLevel() {
+	chooseLevel();
 	createGameBoardHTML(length);
 	writeColStreaksToGrid();
 	writeRowStreaksToGrid();
 	elementsOnGrid();
-	stopSound('menuMusic');
-	playSound('menuSelect');
-	flashText('startGame'+length);
-	activateSection("play",500);
-	activateVideoBG('none');
-	
+	stopAllSound();
+	playSound("menuSelect");
+	flashText("nextLevel");
+	activateSection("play", 500);
+	activateVideoBG("none");
+
 	console.log(gameBoard);
 	startTimer();
 	updateTurns();
@@ -59,25 +84,25 @@ function startGame(length) {
 }
 
 function backToMenu() {
-	activateVideoBG('openingVid');
-	activateSection('menu');
+	activateVideoBG("openingVid.gif");
+	activateSection("menu");
 }
 
-function gotoSettings(){
-	activateVideoBG('none');
-	activateSection('settings');
+function gotoSettings() {
+	activateVideoBG("none");
+	activateSection("settings");
 }
 
 function elementsOnGrid() {
-	target['elementsOnGrid'].innerHTML =
+	target["elementsOnGrid"].innerHTML =
 		"Elements on Grid: " + gameBoard.length * gameBoard.length;
 }
 
 function startTimer() {
-	target['timer'].innerHTML = "Timer: " + timerSeconds;
+	target["timer"].innerHTML = "Timer: " + timerSeconds;
 	setInterval(function() {
 		timerSeconds++;
-		target['timer'].innerHTML = "Timer: " + timerSeconds;
+		target["timer"].innerHTML = "Timer: " + timerSeconds;
 	}, 1000);
 }
 
@@ -85,78 +110,67 @@ function setGameDifficulty(_difficulty) {
 	difficulty = _difficulty;
 }
 
-function updateTurns(){
-	target['turns'].innerHTML='Turns: ' + ++turnCount;
+function updateTurns() {
+	target["turns"].innerHTML = "Turns: " + ++turnCount;
 }
 
 function updateErrors() {
-	target['errors'].innerHTML='Errors: ' + ++errorCount;
+	target["errors"].innerHTML = "Errors: " + ++errorCount;
 }
 
-/*
-slider.oninput = function() {
-	difficulty = this.value;
-};
-*/
-
-function difficultyMarkup() {
-	// don't let difficulty get too low or high
-	let diff = 50;
-	if (difficulty < 25) {
-		diff = 25;
-	} else if (difficulty > 75) {
-		diff = 75;
+function activateVideoBG(gif) {
+	if (gif === "none") {
+		document.body.style.backgroundImage = "";
 	} else {
-		diff = difficulty;
+		document.body.style.backgroundImage = "url('assets/" + gif + "')";
+		document.body.style.backgroundRepeat = "no-repeat";
+		document.body.style.backgroundSize = "100% 100%";
 	}
-	return diff;
 }
 
-function activateVideoBG(id) {
+function activateVideoBGold(id) {
 	console.log("Activating background video: " + id);
-    let c = videos.children;
+	let c = videos.children;
 	for (let i = 0; i < c.length; i++) {
-		if (c[i].id !== "")
-			target[c[i].id].style.display = "none";
+		if (c[i].id !== "") target[c[i].id].style.display = "none";
 	}
 
-    if (id !== 'none') {
-        target[id].style.display = "inline";
-    }
-	
+	if (id !== "none") {
+		target[id].style.display = "inline";
+	}
 }
 
-function activateSection(id, delayUntilChangover = 0) {
+function activateSection(id, delayUntilChangover = 0, callback = noop) {
 	console.log("Activating section: " + id);
 
-	let changeOver = function(){
+	let changeOver = function() {
 		let c = main.children;
 		for (let i = 0; i < c.length; i++) {
 			if (c[i].id !== "")
 				document.getElementById(c[i].id).style.display = "none";
 		}
 		document.getElementById(id).style.display = "inline";
-	}
+		callback();
+	};
 
 	setTimeout(changeOver, delayUntilChangover);
-	fromId=id;
+	fromId = id;
 }
 
-function pushSquare(i,j) {
+function pushSquare(i, j) {
 	updateTurns();
-	console.log(i + ' ' + j);
-	let x=i-1;
-	let y=j-1;
-	if (pushMode==='marked') {
+	console.log(i + " " + j);
+	let x = i - 1;
+	let y = j - 1;
+	if (pushMode === "marked") {
 		if (gameBoard.grid[x][y].isUsed) {
-			gameBoard.grid[x][y].isDisplayed=true;
-			target[i+'|'+j].style = flexBasisCache + successBlockColor;
+			gameBoard.grid[x][y].isDisplayed = true;
+			target[i + "|" + j].style = flexBasisCache + successBlockColor;
 			target["rightSound"].play();
-		}
-		else {
+		} else {
 			updateErrors();
-			gameBoard.grid[x][y].isDisplayed=true;
-			target[i+'|'+j].style = flexBasisCache + errorBlockColor;
+			gameBoard.grid[x][y].isDisplayed = true;
+			target[i + "|" + j].style = flexBasisCache + errorBlockColor;
 			target["wrongSound"].play();
 		}
 	}
@@ -164,115 +178,156 @@ function pushSquare(i,j) {
 	isGameOver();
 }
 
-function isGameOver(){
-	if (turnCount===gameBoard.length){
-		target["stats"].innerHTML = `
-		Turns: ${turnCount} <br>
-		Errors: ${errorCount} <br>
-		`;
+function isGameOver() {
+	document.getElementById("youLost").style.display = "none";
+	document.getElementById("youWon").style.display = "none";
 
-		target['youWon'].style.display='block';
-		activateSection('gameOver');
+	if (errorCount == 5) {
+		console.log("Gamer lost");
+		document.getElementById("youLost").style.display = "block";
+		return true;
 	}
-	else {
-		console.log(turnCount + ' vs ' + gameBoard.length);
+
+	// scan the board and see if all the squares are clicked
+	// if so, gamer won!
+	let l = gameBoard.grid[0].length;
+	for (let i = 0; i < l; i++) {
+		for (let j = 0; j < l; j++) {
+			if (gameBoard.grid[i][j].isUsed) {
+				if (!gameBoard.grid[i][j].isDisplayed) {
+					console.log("Game isnt over yet!");
+					console.log(i + "x" + j);
+					console.log(gameBoard.grid[i][j]);
+					return false;
+				}
+			}
+		}
+	}
+
+	// gamer won sequence
+	document.getElementById("youWon").style.display = "block";
+	level++; // next board
+	// all levels have been won!
+	console.log(level);
+	console.log(levelData.length);
+	document.body.className = "levelWon";
+	playSound("levelWon");
+
+	if (level === levelData.length) {
+		activateSection("rollCredits", 1000, function() {
+			playSound("gameWonAll");
+			activateVideoBG("gameWonAll.gif");
+			document.body.className = "";
+		});
+	} else {
+		activateSection("gameOver", 1000, function() {
+			playSound("gameWon" + level);
+			activateVideoBG("gameWon" + level + ".gif");
+			document.body.className = "";
+		});
+	}
+
+	return true;
+}
+
+var cacheColor = "";
+// ---------------- settings
+function setGrid(colour) {
+	cacheColor = colour;
+	target["board"].style.color = colour;
+	let t = "grid" + colour;
+	// clear previous underlines before setting a new one
+	let c = target["gridoptions"].children;
+	for (let i = 0; i < c.length; i++) {
+		c[i].style.textDecoration = "none";
+	}
+	target[t].style.textDecoration = "underline";
+	switch (colour) {
+		case "cyan":
+			document.body.style.background = "#000033";
+			break;
+		case "yellow":
+			document.body.style.background = "#222200";
+			break;
+		case "fuchsia":
+			document.body.style.background = "#10003b";
+			break;
+		case "crimson":
+			document.body.style.background = "#110000";
+			break;
+		case "darkorange":
+			document.body.style.background = "#111100";
+			break;
+		case "limegreen":
+			document.body.style.background = "#001100";
+			break;
+		default:
+			document.body.style.background = "#10003b";
 	}
 }
 
-
-// ---------------- settings
-function setGrid(colour){
-	target["board"].style.color=colour;
-	let t="grid"+colour;
-	// clear previous underlines before setting a new one
-	let c = target['gridoptions'].children;
-	for (let i=0; i<c.length; i++) {
-		c[i].style.textDecoration = "none";
-	}
-	target[t].style.textDecoration="underline";
-	switch(colour) {
-		case 'cyan':
-			document.body.style.background = '#000033';
-			break;
-		case 'yellow':
-			document.body.style.background = '#222200';
-			break;
-		case 'fuchsia':
-			document.body.style.background = '#10003b';
-			break;
-		case 'crimson':
-			document.body.style.background = '#110000';
-			break;
-		case 'darkorange':
-			document.body.style.background = '#111100';
-			break;
-		case 'limegreen':
-			document.body.style.background = '#001100';
-			break;
-		default:
-			document.body.style.background = '#10003b';
-	}
+function restoreColors() {
+	setGrid(cacheColor);
 }
 
 function setSuccess(colour) {
-	let t="block"+colour;
+	let t = "block" + colour;
 	// clear previous underlines before setting a new one
-	let c = target['blockoptions'].children;
-	for (let i=0; i<c.length; i++) {
+	let c = target["blockoptions"].children;
+	for (let i = 0; i < c.length; i++) {
 		c[i].style.textDecoration = "none";
 	}
 
-	target[t].style.textDecoration="underline";
+	target[t].style.textDecoration = "underline";
 	successBlockColor = "background-color: " + colour + ";";
 }
 
 function setError(colour) {
-	let t="error"+colour;
+	let t = "error" + colour;
 	// clear previous underlines before setting a new one
-	let c = target['erroroptions'].children;
-	for (let i=0; i<c.length; i++) {
+	let c = target["erroroptions"].children;
+	for (let i = 0; i < c.length; i++) {
 		c[i].style.textDecoration = "none";
 	}
-	
-	target[t].style.textDecoration="underline";
+
+	target[t].style.textDecoration = "underline";
 	errorBlockColor = "background-color: " + colour + ";";
 }
 
-
 // ---------------- board generation
 function writeColStreaksToGrid() {
-	for (let i=0; i<gameBoard.colStreaks.length; i++){
-		let t = '';
-		for (let j=0; j<gameBoard.colStreaks[i].length; j++){
-			t += gameBoard.colStreaks[i][j] + ' ';
+	for (let i = 0; i < gameBoard.colStreaks.length; i++) {
+		let t = "";
+		for (let j = 0; j < gameBoard.colStreaks[i].length; j++) {
+			t += gameBoard.colStreaks[i][j] + " ";
 		}
-		let offset=i+1;
-		let id= offset + '|0';
-		if (t.length===0) {
-			target[id].children[0].innerHTML=0;
-		}
-		else {
-			target[id].children[0].innerHTML=t;
+		let offset = i + 1;
+		let id = offset + "|0";
+		if (t.length === 0) {
+			target[id].children[0].innerHTML = 0;
+		} else {
+			target[id].children[0].innerHTML = t;
 		}
 	}
 }
 
 function writeRowStreaksToGrid() {
-	for (let i=0; i<gameBoard.rowStreaks.length; i++){
-		let t = '';
-		for (let j=0; j<gameBoard.rowStreaks[i].length; j++){
-			t += gameBoard.rowStreaks[i][j] + '<br>';
+	for (let i = 0; i < gameBoard.rowStreaks.length; i++) {
+		let t = "";
+		for (let j = 0; j < gameBoard.rowStreaks[i].length; j++) {
+			t += gameBoard.rowStreaks[i][j] + "<br>";
 		}
-		let offset=i+1;
-		let id= '0|'+offset;
-		target[id].children[0].innerHTML=t;
-		target[id].children[0].className='top-row';
+		let offset = i + 1;
+		let id = "0|" + offset;
+		target[id].children[0].innerHTML = t;
+		target[id].children[0].className = "top-row";
 	}
 }
 
 // this seems redudant now but future features might add to this
 function createGameBoardHTML(length) {
 	let board = document.getElementById("board");
+	board.innerHTML = "";
 	let l = gameBoard.length + 1; // +1 for hints areas
 	let width = 100 / l;
 	flexBasisCache = "flex-basis: calc(" + width + "% - 4px);";
@@ -283,9 +338,9 @@ function createGameBoardHTML(length) {
 			square.id = i + "|" + j;
 			square.className = "square";
 			square.style = flexBasisCache;
-			
-			square.onclick = function(){
-				pushSquare(i,j);
+
+			square.onclick = function() {
+				pushSquare(i, j);
 			};
 
 			var sqContent = document.createElement("div");
@@ -299,117 +354,71 @@ function createGameBoardHTML(length) {
 	buildIdTargets();
 }
 
-function generateGrid(l) {
-	let row = [];
-	let totalSquaresUsed = 0;
-	row.length = l;
-	for (let i = 0; i < l; i++) {
-		let col = [];
-		col.length = l;
-		for (let j = 0; j < l; j++) {
-			col[j] = copyObject(square);
-			if (isUsedSquare()) {
-				col[j].isUsed = true;
-				totalSquaresUsed++;
-			}
-			col[j].isUsed = isUsedSquare();
-		}
-		row[i] = col;
-	}
-	gameBoard.grid = row;
-	gameBoard.totalUsedSquares = totalSquaresUsed;
-	gameBoard.diff = difficulty;
-	gameBoard.length = l;
-	showGridInConsole();
-	countStreaks();
+function loadLevels(gridType, callback) {
+	let post = {
+		gridType: gridType
+	};
+	postData(post, "/get_level_type.php?", function(data) {
+		//console.log(data);
+		levelData = data;
+		callback();
+	});
 }
 
-function countStreaks() {
-	let l = gameBoard.grid[0].length;
-	for (let i = 0; i < l; i++) {
-		let colStreak = 0;
-		let rowStreak = 0;
-		let colStreaks = [];
-		let rowStreaks = [];
-		for (let j = 0; j < l; j++) {
-			// cols
-			// count up the consecutive marked spaces
-			if (gameBoard.grid[i][j].isUsed === true) {
-				colStreak++;
-			} else {
-				// streak of marked spaces ended, push to array
-				if (colStreak > 0) {
-					colStreaks.push(colStreak);
-					colStreak = 0;
-				}
-			}
-
-			// rows   just swap j and i - genius!
-			// count up the consecutive marked spaces
-			if (gameBoard.grid[j][i].isUsed === true) {
-				rowStreak++;
-			} else {
-				// streak of marked spaces ended, push to array
-				if (rowStreak > 0) {
-					rowStreaks.push(rowStreak);
-					rowStreak = 0;
-				}
-			}
-		}
-		// check for last streaks
-		if (colStreak > 0) {
-			colStreaks.push(colStreak);
-		}
-		if (rowStreak > 0) {
-			rowStreaks.push(rowStreak);
-		}
-
-		// makes multidimensional arrays e.g. colStreaks[0]=[]
-		gameBoard.colStreaks[i] = colStreaks;
-		gameBoard.rowStreaks[i] = rowStreaks;
-	}
+function chooseLevel() {
+	console.log(levelData[0]);
+	gameBoard = JSON.parse(levelData[level].levelblob);
 }
 
-function isUsedSquare() {
-	// randomize the usage of a square, plus add some difficulty from the slider
-	let p = Math.floor(Math.random() * 100) / 100;
-	let squareCutoff = difficultyMarkup() / 100;
-	if (p < squareCutoff) {
-		return false;
-	} else {
-		return true;
-	}
+function postData(obj, url, callback) {
+	var data = {};
+	data = JSON.stringify(obj);
+	console.log("data to post:");
+	console.log(data);
+
+	// Sending and receiving data in JSON format using POST method
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader("Content-Type", "application/json");
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === 4) {
+			if (xhr.status === 200) {
+				var json = JSON.parse(xhr.responseText);
+				callback(json);
+			} else {
+				activateSection("error");
+			}
+		}
+	};
+	xhr.send(data);
 }
 
 // ---------------- initialization and preloading
-
 
 function init() {
 	// preload for performance and almost must come first!
 	buildIdTargets();
 	// set initial color scheme
-	setGrid('fuchsia');
-	
-	target['openingVid'].play();
-	
+	setGrid("fuchsia");
+
+	//target["openingVid"].play();
+	activateVideoBG("openingVid.gif");
+
 	// begin
 	activateSection("welcomeScreenGo");
 
 	// deactivate the 13x13 grid for mobile devices
-	var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
-	var android  = !!navigator.platform && /android/.test(navigator.platform);
-	if (iOS || android){
+	var iOS =
+		!!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+	var android = !!navigator.platform && /android/.test(navigator.platform);
+	if (iOS || android) {
 		target["startGame13"].style.display = "none";
 	}
 }
 
+var audioFiles = ["assets/DiscoFever.mp3", "assets/sfx_menu_select4_short.mp3"];
 
-var audioFiles = [
-	"assets/DiscoFever.mp3",
-	"assets/sfx_menu_select4_short.mp3"
-];
-
-function preLoad() {	
+function preLoad() {
 	for (var i in audioFiles) {
 		preloadAudio(audioFiles[i]);
 	}
@@ -419,53 +428,52 @@ function preloadAudio(url) {
 	var audio = new Audio();
 	// once this file loads, it will call loadedAudio()
 	// the file will be kept by the browser as cache
-	audio.addEventListener('canplaythrough', loadedAudio, false);
+	audio.addEventListener("canplaythrough", loadedAudio, false);
 	audio.src = url;
 }
-	
+
 var loaded = 0;
 function loadedAudio() {
 	// this will be called every time an audio file is loaded
 	// we keep track of the loaded files vs the requested files
 	loaded++;
-	if (loaded === audioFiles.length){
+	if (loaded === audioFiles.length) {
 		// all have loaded
 	}
 }
 
 function buildIdTargets() {
-	let ts = document.querySelectorAll('*[id]');
-	target={};
-	for (let i=0; i<ts.length; i++){
+	let ts = document.querySelectorAll("*[id]");
+	target = {};
+	for (let i = 0; i < ts.length; i++) {
 		target[ts[i].id] = ts[i];
 	}
 	var main = document.getElementById("main");
-	var audios = document.getElementById('audios');
-	var videos = document.getElementById('videos');
+	var audios = document.getElementById("audios");
+	var videos = document.getElementById("videos");
 }
 
-
 // ---------------- animations
-function flashText(id,animDelay=50,repeat=1){
-	setTimeout(function(){
-		target[id].className='flash1';
+function flashText(id, animDelay = 50, repeat = 1) {
+	setTimeout(function() {
+		target[id].className = "flash1";
 	}, 0);
-	setTimeout(function(){
-		target[id].className='flash2';
-	}, animDelay*1);
-	setTimeout(function(){
-		target[id].className='flash3';
-	}, animDelay*2);
-	setTimeout(function(){
-		target[id].className='flash4';
-	}, animDelay*3);
-	setTimeout(function(){
-		if (repeat>0){
+	setTimeout(function() {
+		target[id].className = "flash2";
+	}, animDelay * 1);
+	setTimeout(function() {
+		target[id].className = "flash3";
+	}, animDelay * 2);
+	setTimeout(function() {
+		target[id].className = "flash4";
+	}, animDelay * 3);
+	setTimeout(function() {
+		if (repeat > 0) {
 			repeat--;
 			console.log(repeat);
-			flashText(id,animDelay,repeat);
+			flashText(id, animDelay, repeat);
 		}
-	}, animDelay*4);
+	}, animDelay * 4);
 }
 
 // ---------------- utility functions
@@ -474,33 +482,38 @@ function copyObject(obj) {
 }
 
 // ----------------- audio routines
-function playSound(id){
+function playSound(id) {
+	console.log(id);
 	target[id].pause();
 	if (!target[id]) return;
-	target[id].currentTime=0;
+	target[id].currentTime = 0;
 	target[id].play();
 }
 
-function stopSound(id){
+function stopSound(id) {
 	target[id].pause();
-	target[id].currentTime=0;
+	target[id].currentTime = 0;
 }
 
+function stopAllSound() {
+	let c = document.getElementById("audios").children;
+	for (let i = 0; i < c.length; i++) {
+		stopSound(c[i].id);
+	}
+}
 
 // ----------------- debug helpers
 function showGridInConsole() {
 	let l = gameBoard.grid[0].length;
 	console.log("Gameboard Stats -- ");
-	console.log("Diff: " + gameBoard.diff);
 	console.log("Used Squares: " + gameBoard.totalUsedSquares);
 	for (let i = 0; i < l; i++) {
 		let colText = "";
 		for (let j = 0; j < l; j++) {
-			if (gameBoard.grid[i][j].isUsed){
-				colText += 'T '
-			}
-			else {
-				colText += 'F ';
+			if (gameBoard.grid[i][j].isUsed) {
+				colText += "T ";
+			} else {
+				colText += "F ";
 			}
 		}
 		console.log(colText);

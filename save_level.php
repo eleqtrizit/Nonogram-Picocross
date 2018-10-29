@@ -10,7 +10,7 @@ $length = $_POST['length'];
 
 $res = $data->InsertLevel($boardName,$gameBoard,$length);
 
-//echo json_encode($res);
+echo json_encode($res);
 
 
 
