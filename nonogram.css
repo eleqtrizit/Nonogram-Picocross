@@ -260,3 +260,29 @@ input {
 	-webkit-animation-iteration-count: 4;
 	-webkit-animation-timing-function: ease-in-out;
 }
+
+@-webkit-keyframes levelLost {
+	0% {
+		background-color: red;
+		opacity: 1;
+	}
+	25% {
+		background-color: #aa0000;
+	}
+	50% {
+		background-color: #880000;
+	}
+	75% {
+		background-color: #440000;
+	}
+	100% {
+		background-color: black;
+	}
+}
+
+.levelLost {
+	-webkit-animation-name: levelLost;
+	-webkit-animation-duration: 1000ms;
+	-webkit-animation-iteration-count: 1;
+	-webkit-animation-timing-function: ease-in-out;
+}

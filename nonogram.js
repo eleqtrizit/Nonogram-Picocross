@@ -66,6 +66,7 @@ function startGame(length) {
 }
 
 function nextLevel() {
+	resetBoard();
 	chooseLevel();
 	createGameBoardHTML(length);
 	writeColStreaksToGrid();
@@ -158,10 +159,17 @@ function activateSection(id, delayUntilChangover = 0, callback = noop) {
 }
 
 function pushSquare(i, j) {
-	updateTurns();
 	console.log(i + " " + j);
 	let x = i - 1;
 	let y = j - 1;
+
+	console.log(gameBoard.grid[x][y].isDisplayed);
+	// button already pressed
+	if (gameBoard.grid[x][y].isDisplayed === true) {
+		return;
+	}
+
+	updateTurns();
 	if (pushMode === "marked") {
 		if (gameBoard.grid[x][y].isUsed) {
 			gameBoard.grid[x][y].isDisplayed = true;
@@ -182,9 +190,16 @@ function isGameOver() {
 	document.getElementById("youLost").style.display = "none";
 	document.getElementById("youWon").style.display = "none";
 
-	if (errorCount == 5) {
+	console.log(errorCount);
+	if (errorCount === 5) {
+		playSound("levelLost");
+		document.body.className = "levelLost";
 		console.log("Gamer lost");
 		document.getElementById("youLost").style.display = "block";
+		activateSection("gameOver", 1000, function() {
+			playSound("gameLost");
+			activateVideoBG("gameLost.gif");
+		});
 		return true;
 	}
 
@@ -195,9 +210,6 @@ function isGameOver() {
 		for (let j = 0; j < l; j++) {
 			if (gameBoard.grid[i][j].isUsed) {
 				if (!gameBoard.grid[i][j].isDisplayed) {
-					console.log("Game isnt over yet!");
-					console.log(i + "x" + j);
-					console.log(gameBoard.grid[i][j]);
 					return false;
 				}
 			}
@@ -215,9 +227,9 @@ function isGameOver() {
 
 	if (level === levelData.length) {
 		activateSection("rollCredits", 1000, function() {
-			playSound("gameWonAll");
 			activateVideoBG("gameWonAll.gif");
 			document.body.className = "";
+			rollCredits();
 		});
 	} else {
 		activateSection("gameOver", 1000, function() {
@@ -230,10 +242,52 @@ function isGameOver() {
 	return true;
 }
 
-var cacheColor = "";
+function rollCredits() {
+	let credits = [
+		"Congrats!<br>You beat the game!",
+		"This has been an<br>Agustin Rivera<br>production",
+		"Game Design:<br><br>A. Rivera",
+		"Graphic Design:<br><br>Agustin R.",
+		"Coding:<br><br>Augi Rivera",
+		"Lead Programmer:<br><br>A.J. Rivera",
+		"Costume Design:<br><br>A. Jesus Rivera",
+		"Special<br>Thanks To:<br><br>Coffee",
+		"Background<br>Design:<br><br>Google Images",
+		"Special<br>Coding<br>Thanks To:<br><br>Stack Overflow<br><br>w3schools",
+		"Sound Effects:<br><br>BassGorilla.com<br><br>Woolyss.com<br><br>OpenGameArt.org",
+		"Music:<br><br>Disco Fever<br>Fortnite",
+		"Music:<br><br>Round and Round<br>Ratt",
+		"Music:<br><br>Fantastic Voyage<br>Lakeside",
+		"Music:<br><br>Rock the Casbah<br>The Clash",
+		"No freshmen were harmed in the making of this game"
+	];
+	let i = 0;
+	target["showCredits"].innerHTML = credits[i++];
+
+	playSound("gameWonAll");
+	let interval = setInterval(function() {
+		console.log(i);
+		target["showCredits"].innerHTML = credits[i++];
+		if (i == credits.length) {
+			target["showCredits"].innerHTML = "";
+			clearInterval(interval);
+			resetBoard();
+			let d = document.createElement("div");
+			d.innerHTML = "Thanks for playing.<br><br><br><br>Back to the menu";
+			d.onclick = function() {
+				level = 0;
+				activateVideoBG("openingVid.gif");
+				stopAllSound();
+				playSound("menuMusic");
+				activateSection("menu");
+			};
+			target["showCredits"].appendChild(d);
+		}
+	}, 1860); // why 1860?? syncs to the music :D
+}
+
 // ---------------- settings
 function setGrid(colour) {
-	cacheColor = colour;
 	target["board"].style.color = colour;
 	let t = "grid" + colour;
 	// clear previous underlines before setting a new one
@@ -264,10 +318,6 @@ function setGrid(colour) {
 		default:
 			document.body.style.background = "#10003b";
 	}
-}
-
-function restoreColors() {
-	setGrid(cacheColor);
 }
 
 function setSuccess(colour) {
@@ -450,7 +500,6 @@ function buildIdTargets() {
 	}
 	var main = document.getElementById("main");
 	var audios = document.getElementById("audios");
-	var videos = document.getElementById("videos");
 }
 
 // ---------------- animations
@@ -472,6 +521,8 @@ function flashText(id, animDelay = 50, repeat = 1) {
 			repeat--;
 			console.log(repeat);
 			flashText(id, animDelay, repeat);
+		} else {
+			target[id].className = "";
 		}
 	}, animDelay * 4);
 }
