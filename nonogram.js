@@ -393,6 +393,10 @@ function writeRowStreaksToGrid() {
 	}
 }
 
+function checkLogin() {
+	
+}
+
 // this seems redudant now but future features might add to this
 function createGameBoardHTML(length) {
 	let board = document.getElementById("board");

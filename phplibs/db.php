@@ -151,18 +151,25 @@ class NONOData
         $nono->Insert("insert into levels values($id,'$name','$board',$length)");   
     }
 
-    public function DeleteBuilding($schoolID,$buildingID) {
+    public function CreateUser($username,$password,$email,$firstname,$lastname,$age,$gender,$location){
         $nono = new db($this->returnType);
-        $nono->Get("delete from structures where schoolID=$schoolID and buildingID=$buildingID");
-        $nono->Get("delete from structureLatLong where schoolID=$schoolID and buildingID=$buildingID");
-        $nono->Get("delete from structureDimensions where schoolID=$schoolID and buildingID=$buildingID");
+        $max = $nono->Get("select coalesce(max(id)+1,0) as max from players;");
+        while ($row = $max->fetch_assoc()) {
+            $maxx = $row["max"];
+            $query="insert into players values($maxx,'$username',PASSWORD('$password'),'$email','$firstname','$lastname',$age,'$gender','$location')";
+            $nono->Insert($query);
+
+            $query="select username,password from players where username='$username";
+            return $nono->Get($query);
+        }
     }
 
-    public function UserLogin($username) {
-    	    $nono = new db($this->returnType);
-    	    $query="select * from players where username='$username'";
-    	    return $nono->Get($query);
+    public function CheckLogin($username){
+        $nono = new db($this->returnType);
+        $query="select username,password,avatarpath from players where username='$username";
+        return $nono->Get($query);
     }
+
 
     public function HashLogin($username,$passhash) {
 	    $nono = new db($this->returnType);
