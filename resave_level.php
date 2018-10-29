@@ -10,6 +10,7 @@ $length = $_POST['length'];
 $id = $_POST['id'];
 
 $data->ResaveLevel($id,$boardName,$gameBoard,$length);
+$ret->success = "true";
 
 
 
