@@ -11,6 +11,7 @@ var successBlockColor = "background-color: cyan;";
 var errorBlockColor = "background-color: red;";
 var level = 0;
 var levelData = {};
+var maxErrors = 5;
 
 var noop = function() {}; // do nothing.
 
@@ -85,8 +86,18 @@ function nextLevel() {
 }
 
 function backToMenu() {
-	activateVideoBG("openingVid.gif");
-	activateSection("menu");
+	stopAllSound();
+	playSound("menuSelect");
+
+	activateSection("menu", 500, function() {
+		playSound("menuMusic");
+		activateVideoBG("openingVid.gif");
+	});
+}
+
+function loserToMenu() {
+	flashText("loserToMenu");
+	backToMenu();
 }
 
 function gotoSettings() {
@@ -160,6 +171,11 @@ function activateSection(id, delayUntilChangover = 0, callback = noop) {
 
 function pushSquare(i, j) {
 	console.log(i + " " + j);
+
+	// ignore pushes on the left and top edge boxes
+	if (i === 0 || j === 0) {
+		return;
+	}
 	let x = i - 1;
 	let y = j - 1;
 
@@ -179,7 +195,9 @@ function pushSquare(i, j) {
 			updateErrors();
 			gameBoard.grid[x][y].isDisplayed = true;
 			target[i + "|" + j].style = flexBasisCache + errorBlockColor;
-			target["wrongSound"].play();
+			if (errorCount < maxErrors) {
+				target["wrongSound"].play();
+			}
 		}
 	}
 
@@ -191,7 +209,7 @@ function isGameOver() {
 	document.getElementById("youWon").style.display = "none";
 
 	console.log(errorCount);
-	if (errorCount === 5) {
+	if (errorCount === maxErrors) {
 		playSound("levelLost");
 		document.body.className = "levelLost";
 		console.log("Gamer lost");
@@ -256,6 +274,7 @@ function rollCredits() {
 		"Special<br>Coding<br>Thanks To:<br><br>Stack Overflow<br><br>w3schools",
 		"Sound Effects:<br><br>BassGorilla.com<br><br>Woolyss.com<br><br>OpenGameArt.org",
 		"Music:<br><br>Disco Fever<br>Fortnite",
+		"Music:<br><br>Lose Yourself<br>Eminem",
 		"Music:<br><br>Round and Round<br>Ratt",
 		"Music:<br><br>Fantastic Voyage<br>Lakeside",
 		"Music:<br><br>Rock the Casbah<br>The Clash",
