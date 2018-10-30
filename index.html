@@ -13,6 +13,10 @@
 
 <body>
 	<div id="audios" style="display:none">
+		<audio id="typing" controls style="display:none" preload="auto">
+			<source src="assets/typing.mp3" type="audio/mpeg">
+			<source src="assets/typing.wav" type="audio/mpeg">
+		</audio>
 		<audio id="menuMusic" controls style="display:none" preload="auto">
 			<source src="assets/DiscoFever.mp3" type="audio/mpeg">
 			<source src="assets/DiscoFever.wav" type="audio/mpeg">
@@ -72,8 +76,9 @@
 					<div onclick="beginLoading()" id="startGame">Start Game</div>
 				</div>
 			</div>
-
 		</div>
+
+
 		<div id="menu" style="display:none">
 			<div class="centermedium">
 				<div>
@@ -84,11 +89,47 @@
 					<div onclick="startGame(13)" id="startGame13" style="cursor: pointer;">
 						13x3
 					</div>
-					<div class="settingsLabel" onclick="gotoSettings()">Settings</div>
+					<div onclick="createUserMenu()" style="cursor: pointer;" id="selectCreateUser">Create User</div>
+					<div class="settingsLabel" onclick="gotoSettings()" id="selectSettings">Settings</div>
 				</div>
-
 			</div>
+		</div>
 
+		<div id="createUser">
+			<div class="centersmall">
+				<div class="createUser">
+					<div>
+						Username:<br>
+						<input type="text" id="username" autocomplete="off" oninput="clack()"><br>
+					</div>
+					<div>
+						Password:<br>
+						<input type="password" id="password" autocomplete="off" oninput="clack()">
+					</div>
+					<div>Email:<br>
+						<input type="email" id="email" oninput="clack()">
+					</div>
+					<div>First Name:<br>
+						<input type="text" id="firstname" autocomplete="off" oninput="clack()">
+					</div>
+					<div>Last Name:<br>
+						<input type="text" id="lastname" autocomplete="off" oninput="clack()">
+					</div>
+					<div>Age:<br>
+						<input type="text" id="age" autocomplete="off" oninput="clack()">
+					</div>
+					<div id="gender">Gender:<br>
+						<span id="male" oninput="clack()" onclick="selectSex('male')">Male</span>
+						<span id="female" oninput="clack()" onclick="selectSex('female')">Female</span>
+						<span id="other" oninput="clack()" onclick="selectSex('other')">Other</span>
+					</div>
+					<div>Location:<br>
+						<input type="text" id="location" autocomplete="off" oninput="clack()">
+					</div>
+					<div onclick="createUser()">Submit</div>
+					<div id="incompleteForm" style="display:none">Please complete the form</div>
+				</div>
+			</div>
 		</div>
 
 		<div id="play" style="display:none;">

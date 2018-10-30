@@ -100,9 +100,63 @@ function loserToMenu() {
 	backToMenu();
 }
 
+function createUserMenu() {
+	flashText("selectCreateUser");
+	playSound("menuSelect");
+	activateSection("createUser", 500, function() {
+		stopSound("menuMusic");
+
+		activateVideoBG("none");
+	});
+}
+
 function gotoSettings() {
-	activateVideoBG("none");
-	activateSection("settings");
+	flashText("selectSettings");
+	playSound("menuSelect");
+	activateSection("settings", 500, function() {
+		activateVideoBG("none");
+	});
+}
+
+var selectedSex = "";
+function selectSex(sex) {
+	let sexes = document.getElementById("gender").children;
+	console.log(sexes);
+	for (let i = 0; i < sexes.length; i++) {
+		if (sexes[i].nodeName === "SPAN") {
+			console.log(sexes[i].id);
+			document.getElementById(sexes[i].id).style = "";
+		}
+	}
+	document.getElementById(sex).style = "color:cyan";
+	selectedSex = sex;
+}
+
+function createUser() {
+	let problems = false;
+	let checkFields = [
+		"username",
+		"password",
+		"email",
+		"firstname",
+		"lastname",
+		"age",
+		"location"
+	];
+	for (const field of checkFields) {
+		document.getElementById(field).style = "";
+		if (document.getElementById(field).value.length == 0) {
+			document.getElementById(field).style = "border-color:red";
+			console.log(field + " is empty");
+			document.getElementById("incompleteForm").style.display = "block";
+			problems = true;
+		}
+	}
+	if (selectedSex.length === 0) {
+		document.getElementById("male").style = "color:red";
+		document.getElementById("female").style = "color:red";
+		document.getElementById("other").style = "color:red";
+	}
 }
 
 function elementsOnGrid() {
@@ -393,9 +447,7 @@ function writeRowStreaksToGrid() {
 	}
 }
 
-function checkLogin() {
-	
-}
+function checkLogin() {}
 
 // this seems redudant now but future features might add to this
 function createGameBoardHTML(length) {
@@ -556,6 +608,10 @@ function copyObject(obj) {
 }
 
 // ----------------- audio routines
+function clack() {
+	playSound("typing");
+}
+
 function playSound(id) {
 	console.log(id);
 	target[id].pause();

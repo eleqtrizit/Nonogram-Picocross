@@ -43,8 +43,20 @@ video#openingVid {
 	}
 }
 
+.createUser > div {
+	padding-bottom: 30px;
+	line-height: 40px;
+}
+
 input {
 	text-align: center;
+	font-family: "Press Start 2P", cursive;
+	background: transparent;
+	outline: none;
+	color: white;
+	border: 0;
+	border-bottom: 2px solid yellow;
+	font-size: 18px;
 }
 
 #header {
