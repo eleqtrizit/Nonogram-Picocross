@@ -14,10 +14,4 @@ $gender = $_POST['gender'];
 $location = $_POST['location'];
 
 $result = $data->CreateUser($username,$password,$email,$firstname,$lastname,$age,$gender,$location);
-
 $data->JSONifyResults($result);
-
-
-
-
-

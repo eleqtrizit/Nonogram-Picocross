@@ -37,7 +37,16 @@ function resetBoard() {
 	errorCount = -1;
 }
 
+var sesh = {
+	username: "",
+	password: "",
+	avatar: ""
+};
+
+var user = {};
+
 function beginLoading() {
+	loadStorage();
 	preLoad();
 	playSound("menuMusic");
 	playSound("menuSelect");
@@ -143,7 +152,11 @@ function createUser() {
 		"age",
 		"location"
 	];
+	let obj = {};
+
 	for (const field of checkFields) {
+		obj[field] = document.getElementById(field).value;
+
 		document.getElementById(field).style = "";
 		if (document.getElementById(field).value.length == 0) {
 			document.getElementById(field).style = "border-color:red";
@@ -156,6 +169,24 @@ function createUser() {
 		document.getElementById("male").style = "color:red";
 		document.getElementById("female").style = "color:red";
 		document.getElementById("other").style = "color:red";
+		problems = true;
+	} else {
+		obj.gender = selectedSex;
+	}
+	console.log(obj);
+	if (problems === false) {
+		console.log(obj);
+		postData(obj, "create_user.php", function(data) {
+			console.log(data);
+			if (data[0].username.length === 0) {
+				document.getElementById("incompleteForm").innerHTML =
+					"Username or email address may already be taken.";
+			} else {
+				// save user
+				user = data[0];
+				saveStorage();
+			}
+		});
 	}
 }
 
@@ -605,6 +636,18 @@ function flashText(id, animDelay = 50, repeat = 1) {
 // ---------------- utility functions
 function copyObject(obj) {
 	return JSON.parse(JSON.stringify(obj));
+}
+
+function loadStorage() {
+	if (localStorage.nono) {
+		user = JSON.parse(localStorage.nono);
+	} else {
+		user = copyObject(sesh);
+	}
+}
+
+function saveStorage() {
+	localStorage.nono = JSON.stringify(user);
 }
 
 // ----------------- audio routines

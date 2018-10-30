@@ -82,6 +82,16 @@ class db
             echo json_encode(array('success' => 'true'));
         }
     }
+
+    public function InsertQuietly($sql) {
+        global $conn;
+       if ($conn->query($sql) === FALSE) {
+           //echo json_encode(array('success' => 'false'));
+       }
+       else {
+           //echo json_encode(array('success' => 'true'));
+       }
+   }
 }
 
 class NONOData
@@ -156,17 +166,16 @@ class NONOData
         $max = $nono->Get("select coalesce(max(id)+1,0) as max from players;");
         while ($row = $max->fetch_assoc()) {
             $maxx = $row["max"];
-            $query="insert into players values($maxx,'$username',PASSWORD('$password'),'$email','$firstname','$lastname',$age,'$gender','$location')";
-            $nono->Insert($query);
+            $query="insert into players values($maxx,'$username',PASSWORD('$password'),'$email','$firstname','$lastname',$age,'$gender','$location','')";
+            $nono->InsertQuietly($query);
 
-            $query="select username,password from players where username='$username";
-            return $nono->Get($query);
+            return $this->CheckLogin($username);
         }
     }
 
     public function CheckLogin($username){
         $nono = new db($this->returnType);
-        $query="select username,password,avatarpath from players where username='$username";
+        $query="select username,password,avatarpath from players where username='$username'";
         return $nono->Get($query);
     }
 
