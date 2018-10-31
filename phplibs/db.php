@@ -183,6 +183,7 @@ class NONOData
     public function UpdateAvatar($username,$filename){
         $nono = new db($this->returnType);
         $query="update players set avatarpath='$filename' where username='$username';";
+        $nono->InsertQuietly($query);
         return $this->CheckLogin($username);
     }
 

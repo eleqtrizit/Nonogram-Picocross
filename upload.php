@@ -1,4 +1,7 @@
 <?php
+
+require_once ('phplibs/db.php');
+
 $target_dir = "avatars/";
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 $uploadOk = 1;
@@ -36,15 +39,15 @@ if ($uploadOk == 0) {
 // if everything is ok, try to upload file
 } else {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-        echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
-        echo $_POST["uploadName"];
+        //echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
+        //echo $_POST["uploadName"];
 
-        require_once ('phplibs/db.php');
+        
         $data = new NONOData();
 
-        $result = $data->UpdateAvatar($username,$filename);
-        $data->JSONifyResults($result);
-
+        $result = $data->UpdateAvatar( $_POST["uploadName"], basename($_FILES["fileToUpload"]["name"]));
+        //$data->JSONifyResults($result);
+        header('Location: /');
 
     } else {
         echo "Sorry, there was an error uploading your file.";

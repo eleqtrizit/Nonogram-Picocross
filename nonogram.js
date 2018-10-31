@@ -70,6 +70,12 @@ function checkLogin() {
 	}
 }
 
+function submitAvatar() {
+	document.getElementById("uploadName").value = user.username;
+	document.getElementById("avatarForm").submit();
+	checkLogin();
+}
+
 function beginLoading() {
 	loadStorage();
 	checkLogin();
@@ -144,11 +150,6 @@ function selectUploadAvatar() {
 	playSound("menuSelect");
 	flashText("selectUploadAvatar");
 	activateSection("uploadAvatar", 500, function() {});
-}
-
-function submitAvatar() {
-	document.getElementById("uploadName").value = user.username;
-	document.getElementById("avatarForm").submit();
 }
 
 function selectLogin() {
