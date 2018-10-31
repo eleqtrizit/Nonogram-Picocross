@@ -51,27 +51,39 @@ function checkLogin() {
 		postData(user, "/login.php", function(data) {
 			// we are not logged in. Destroy storage
 			if (data.isLoggedIn === false) {
-				console.log(
-					"User session has expired or password has changed."
-				);
+				console.log("User session has expired or password has changed.");
 				user = {};
 				saveStorage();
 			} else {
 				console.log("User is logged in.");
-				document.getElementById("selectUserFunctions").style.display =
-					"none";
+				document.getElementById("selectUserFunctions").style.display = "none";
 				if (user.avatarpath.length === 0) {
-					document.getElementById(
-						"selectUploadAvatar"
-					).style.display = "block";
+					document.getElementById("selectUploadAvatar").style.display = "block";
 				}
 			}
 		});
 	}
 }
 
+function getFileName() {
+	var fullPath = document.getElementById("fileToUpload").value;
+	if (fullPath) {
+		var startIndex =
+			fullPath.indexOf("\\") >= 0
+				? fullPath.lastIndexOf("\\")
+				: fullPath.lastIndexOf("/");
+		var filename = fullPath.substring(startIndex);
+		if (filename.indexOf("\\") === 0 || filename.indexOf("/") === 0) {
+			filename = filename.substring(1);
+		}
+		alert(filename);
+	}
+}
+
 function submitAvatar() {
 	document.getElementById("uploadName").value = user.username;
+	// use form element below to help check if the file upload is successful
+	document.getElementById("fileName").value = getFileName();
 	document.getElementById("avatarForm").submit();
 	checkLogin();
 }
@@ -612,8 +624,7 @@ function init() {
 	activateSection("welcomeScreenGo");
 
 	// deactivate the 13x13 grid for mobile devices
-	var iOS =
-		!!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+	var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 	var android = !!navigator.platform && /android/.test(navigator.platform);
 	if (iOS || android) {
 		target["startGame13"].style.display = "none";
