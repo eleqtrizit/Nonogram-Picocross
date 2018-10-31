@@ -179,6 +179,12 @@ class NONOData
         return $nono->Get($query);
     }
 
+    // update players set avatarpath='' where username='eleqtriq';
+    public function UpdateAvatar($username,$filename){
+        $nono = new db($this->returnType);
+        $query="update players set avatarpath='$filename' where username='$username';";
+        return $this->CheckLogin($username);
+    }
 
     public function HashLogin($username,$passhash) {
 	    $nono = new db($this->returnType);

@@ -37,6 +37,15 @@ if ($uploadOk == 0) {
 } else {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
         echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
+        echo $_POST["uploadName"];
+
+        require_once ('phplibs/db.php');
+        $data = new NONOData();
+
+        $result = $data->UpdateAvatar($username,$filename);
+        $data->JSONifyResults($result);
+
+
     } else {
         echo "Sorry, there was an error uploading your file.";
     }

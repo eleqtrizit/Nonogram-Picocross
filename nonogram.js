@@ -45,9 +45,34 @@ var sesh = {
 
 var user = {};
 
+function checkLogin() {
+	// don't even bother if we are not logged in locally
+	if (user.username.length > 0) {
+		postData(user, "/login.php", function(data) {
+			// we are not logged in. Destroy storage
+			if (data.isLoggedIn === false) {
+				console.log(
+					"User session has expired or password has changed."
+				);
+				user = {};
+				saveStorage();
+			} else {
+				console.log("User is logged in.");
+				document.getElementById("selectUserFunctions").style.display =
+					"none";
+				if (user.avatarpath.length === 0) {
+					document.getElementById(
+						"selectUploadAvatar"
+					).style.display = "block";
+				}
+			}
+		});
+	}
+}
+
 function beginLoading() {
 	loadStorage();
-	preLoad();
+	checkLogin();
 	playSound("menuMusic");
 	playSound("menuSelect");
 	flashText("startGame");
@@ -109,12 +134,35 @@ function loserToMenu() {
 	backToMenu();
 }
 
+function selectUserFunctions() {
+	playSound("menuSelect");
+	flashText("selectUserFunctions");
+	activateSection("userFunctions", 500, function() {});
+}
+
+function selectUploadAvatar() {
+	playSound("menuSelect");
+	flashText("selectUploadAvatar");
+	activateSection("uploadAvatar", 500, function() {});
+}
+
+function submitAvatar() {
+	document.getElementById("uploadName").value = user.username;
+	document.getElementById("avatarForm").submit();
+}
+
+function selectLogin() {
+	playSound("menuSelect");
+	flashText("selectLogin");
+	activateSection("loginPage", 500, function() {});
+}
+
 function createUserMenu() {
 	flashText("selectCreateUser");
 	playSound("menuSelect");
 	activateSection("createUser", 500, function() {
 		stopSound("menuMusic");
-
+		playSound("makeUser");
 		activateVideoBG("none");
 	});
 }
@@ -360,6 +408,7 @@ function rollCredits() {
 		"Sound Effects:<br><br>BassGorilla.com<br><br>Woolyss.com<br><br>OpenGameArt.org",
 		"Music:<br><br>Disco Fever<br>Fortnite",
 		"Music:<br><br>Lose Yourself<br>Eminem",
+		"Music:<br><br>Another One Bites The Dust<br>Queen",
 		"Music:<br><br>Round and Round<br>Ratt",
 		"Music:<br><br>Fantastic Voyage<br>Lakeside",
 		"Music:<br><br>Rock the Casbah<br>The Clash",
@@ -478,8 +527,6 @@ function writeRowStreaksToGrid() {
 	}
 }
 
-function checkLogin() {}
-
 // this seems redudant now but future features might add to this
 function createGameBoardHTML(length) {
 	let board = document.getElementById("board");
@@ -569,32 +616,6 @@ function init() {
 	var android = !!navigator.platform && /android/.test(navigator.platform);
 	if (iOS || android) {
 		target["startGame13"].style.display = "none";
-	}
-}
-
-var audioFiles = ["assets/DiscoFever.mp3", "assets/sfx_menu_select4_short.mp3"];
-
-function preLoad() {
-	for (var i in audioFiles) {
-		preloadAudio(audioFiles[i]);
-	}
-}
-
-function preloadAudio(url) {
-	var audio = new Audio();
-	// once this file loads, it will call loadedAudio()
-	// the file will be kept by the browser as cache
-	audio.addEventListener("canplaythrough", loadedAudio, false);
-	audio.src = url;
-}
-
-var loaded = 0;
-function loadedAudio() {
-	// this will be called every time an audio file is loaded
-	// we keep track of the loaded files vs the requested files
-	loaded++;
-	if (loaded === audioFiles.length) {
-		// all have loaded
 	}
 }
 
