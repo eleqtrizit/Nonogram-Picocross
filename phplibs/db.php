@@ -184,7 +184,6 @@ class NONOData
         $nono = new db($this->returnType);
         $query="update players set avatarpath='$filename' where username='$username';";
         $nono->InsertQuietly($query);
-        return $this->CheckLogin($username);
     }
 
     public function HashLogin($username,$passhash) {

@@ -51,14 +51,19 @@ function checkLogin() {
 		postData(user, "/login.php", function(data) {
 			// we are not logged in. Destroy storage
 			if (data.isLoggedIn === false) {
-				console.log("User session has expired or password has changed.");
+				console.log(
+					"User session has expired or password has changed."
+				);
 				user = {};
 				saveStorage();
 			} else {
 				console.log("User is logged in.");
-				document.getElementById("selectUserFunctions").style.display = "none";
+				document.getElementById("selectUserFunctions").style.display =
+					"none";
 				if (user.avatarpath.length === 0) {
-					document.getElementById("selectUploadAvatar").style.display = "block";
+					document.getElementById(
+						"selectUploadAvatar"
+					).style.display = "block";
 				}
 			}
 		});
@@ -76,7 +81,6 @@ function getFileName() {
 		if (filename.indexOf("\\") === 0 || filename.indexOf("/") === 0) {
 			filename = filename.substring(1);
 		}
-		alert(filename);
 	}
 }
 
@@ -137,8 +141,13 @@ function nextLevel() {
 	updateErrors();
 }
 
-function backToMenu() {
+function resetToMenu(flashme = "") {
+	clearParams();
 	stopAllSound();
+
+	if (flashme.length !== "") {
+		flashText(flashme);
+	}
 	playSound("menuSelect");
 
 	activateSection("menu", 500, function() {
@@ -148,8 +157,14 @@ function backToMenu() {
 }
 
 function loserToMenu() {
-	flashText("loserToMenu");
-	backToMenu();
+	resetToMenu("loserToMenu");
+}
+
+function tryAgain() {
+	clearParams();
+	playSound("menuSelect");
+	flashText("tryAgain");
+	activateSection("uploadAvatar", 500, function() {});
 }
 
 function selectUserFunctions() {
@@ -219,7 +234,7 @@ function createUser() {
 		obj[field] = document.getElementById(field).value;
 
 		document.getElementById(field).style = "";
-		if (document.getElementById(field).value.length == 0) {
+		if (document.getElementById(field).value.length === 0) {
 			document.getElementById(field).style = "border-color:red";
 			console.log(field + " is empty");
 			document.getElementById("incompleteForm").style.display = "block";
@@ -234,21 +249,31 @@ function createUser() {
 	} else {
 		obj.gender = selectedSex;
 	}
-	console.log(obj);
+
 	if (problems === false) {
 		console.log(obj);
 		postData(obj, "create_user.php", function(data) {
 			console.log(data);
 			if (data[0].username.length === 0) {
 				document.getElementById("incompleteForm").innerHTML =
-					"Username or email address may already be taken.";
+					"Username already taken.";
 			} else {
 				// save user
 				user = data[0];
 				saveStorage();
+				activateVideoBG("openingVid.gif");
+				activateSection("userCreated");
 			}
 		});
 	}
+}
+
+function userCreatedBackToMenu() {
+	flashText("userCreatedContinue");
+	playSound("menuSelect");
+	document.getElementById("selectUserFunctions").style.display = "none";
+	document.getElementById("selectUploadAvatar").style.display = "block";
+	activateSection("menu", 500);
 }
 
 function elementsOnGrid() {
@@ -621,14 +646,57 @@ function init() {
 	activateVideoBG("openingVid.gif");
 
 	// begin
-	activateSection("welcomeScreenGo");
+	if (isSpecialMode()) {
+		let msg = "";
+		if (readParam("upload") === "failed") {
+			if (readParam("error") !== null) {
+				msg += errors(readParam("error"));
+			} else {
+				msg += "Upload complete.";
+				document.getElementById("tryAgain").style.display = "none";
+				checkLogin();
+			}
+		} else {
+			msg += "Upload complete.";
+			document.getElementById("tryAgain").style.display = "none";
+			checkLogin();
+		}
+		document.getElementById("uploadMsg").innerHTML = msg;
+		//clearParams();
+		activateSection("uploadComplete");
+	} else {
+		activateSection("welcomeScreenGo");
+	}
 
 	// deactivate the 13x13 grid for mobile devices
-	var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+	var iOS =
+		!!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 	var android = !!navigator.platform && /android/.test(navigator.platform);
 	if (iOS || android) {
 		target["startGame13"].style.display = "none";
 	}
+}
+
+// error handling
+function errors(index) {
+	/* error codes
+	1 - not an image
+	2 - already exists
+	3 - too large
+	4 - unknown file type
+	5 - file upload failed
+	6 - file upload failed
+	*/
+	let errors = [
+		"No errors",
+		"Not an image",
+		"Already exists",
+		"Too large",
+		"Unknown file type",
+		"File upload failed",
+		"File upload failed"
+	];
+	return errors[index];
 }
 
 function buildIdTargets() {
@@ -681,6 +749,25 @@ function loadStorage() {
 
 function saveStorage() {
 	localStorage.nono = JSON.stringify(user);
+}
+
+function isSpecialMode() {
+	if (readParam("upload") !== null) {
+		return true;
+	}
+
+	return false;
+}
+
+function readParam(param) {
+	var url_string = window.location.href;
+	var url = new URL(url_string);
+	var val = url.searchParams.get(param);
+	return val;
+}
+
+function clearParams() {
+	window.history.replaceState({}, document.title, "/");
 }
 
 // ----------------- audio routines
