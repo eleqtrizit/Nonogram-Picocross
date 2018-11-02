@@ -89,7 +89,7 @@
 					<div onclick="startGame(13)" id="startGame13" style="cursor: pointer;">
 						13x3
 					</div>
-					<div id="selectUserFunctions" onclick="selectUserFunctions()" style="cursor: pointer;">Sign in/up</div>
+					<div id="selectUserFunctions" onclick="selectUserFunctions()" style="cursor: pointer; display:none">Sign in/up</div>
 					<div id="selectUploadAvatar" onclick="selectUploadAvatar()" style="cursor: pointer; display:none">Upload Avatar</div>
 					<div class="settingsLabel" onclick="gotoSettings()" id="selectSettings">Settings</div>
 				</div>
@@ -133,143 +133,142 @@
 
 					</div>
 					<div id="tryAgain" onclick="tryAgain()">Try Again</div>
-					<div id="tryMenu" onclick="resetToMenu('tryMenu')"">Back to Menu</div>
+					<div id="tryMenu" onclick="resetToMenu('tryMenu')">Back to Menu</div>
 				</div>
 
 			</div>
 		</div>
 
-		<div id="
-					 createUser">
-						<div class="centersmall">
-							<div class="createUser">
-								<div>
-									Username:<br>
-									<input type="text" id="username" autocomplete="off" oninput="clack()"><br>
-								</div>
-								<div>
-									Password:<br>
-									<input type="password" id="password" autocomplete="off" oninput="clack()">
-								</div>
-								<div>Email:<br>
-									<input type="email" id="email" oninput="clack()">
-								</div>
-								<div>First Name:<br>
-									<input type="text" id="firstname" autocomplete="off" oninput="clack()">
-								</div>
-								<div>Last Name:<br>
-									<input type="text" id="lastname" autocomplete="off" oninput="clack()">
-								</div>
-								<div>Age:<br>
-									<input type="number" id="age" autocomplete="off" oninput="clack()">
-								</div>
-								<div id="gender">Gender:<br>
-									<span id="male" oninput="clack()" onclick="selectSex('male')">Male</span>
-									<span id="female" oninput="clack()" onclick="selectSex('female')">Female</span>
-									<span id="other" oninput="clack()" onclick="selectSex('other')">Other</span>
-								</div>
-								<div>Location:<br>
-									<input type="text" id="location" autocomplete="off" oninput="clack()">
-								</div>
-								<div onclick="createUser()">Submit</div>
-								<div id="incompleteForm" style="display:none">Please complete the form</div>
-							</div>
-						</div>
+		<div id="createUser">
+			<div class="centersmall">
+				<div class="createUser">
+					<div>
+						Username:<br>
+						<input type="text" id="username" autocomplete="off" oninput="clack()"><br>
 					</div>
-
-					<div id="userCreated" style="display:none">
-						<div class="centerlarge">
-							<div>
-								<div style="padding-bottom: 40px;">Account Created</div>
-								<div id="userCreatedContinue" onclick="userCreatedBackToMenu()">Continue</div>
-							</div>
-						</div>
+					<div>
+						Password:<br>
+						<input type="password" id="password" autocomplete="off" oninput="clack()">
 					</div>
-
-					<div id="play" style="display:none;">
-						<div class="centersmall">
-							<div>
-								<div id="gameStats">
-									<span id="timer" class="trackers"></span>
-									<span id="turns" class="trackers"></span>
-									<span id="errors" class="trackers"></span>
-								</div>
-								<div id="board"></div>
-								<div>
-									<span id="elementsOnGrid" class="trackers"></span>
-								</div>
-							</div>
-						</div>
-
+					<div>Email:<br>
+						<input type="email" id="email" oninput="clack()">
 					</div>
-
-					<div id="gameOver" style="display: none">
-						<div class="centermedium">
-							<div>
-								<div id="youWon" style="display: none; margin-top: 20vh;" class="large">
-									<div style="margin-bottom: 50px;">You Won!</div>
-									<div id="nextLevel" style="cursor: pointer" onclick="nextLevel()">Go to next level</div>
-								</div>
-								<div id="youLost" style="display: none" class="youWonOrLost">
-									<div style="margin-bottom: 50px;">You Lost</div>
-									<div id="loserToMenu" style="cursor: pointer" onclick="loserToMenu()">Go to menu</div>
-								</div>
-								<div id="stats"></div>
-							</div>
-						</div>
-
+					<div>First Name:<br>
+						<input type="text" id="firstname" autocomplete="off" oninput="clack()">
 					</div>
-
-					<div id="rollCredits" style="display: none">
-						<div class="centersmall">
-							<div>
-								<div id="showCredits" style="font-size: 32px; line-height: 40px;">
-								</div>
-							</div>
-						</div>
+					<div>Last Name:<br>
+						<input type="text" id="lastname" autocomplete="off" oninput="clack()">
 					</div>
-
-
-					<div id="settings" style="display:none;">
-						<div class="centersmall">
-							<div>
-								<div id="gridoptions" style="padding-bottom: 80px">Change the grid outline color:<br>
-									<span style="color: cyan" onclick="setGrid('cyan')" id="gridcyan">Cyan</span>
-									<span style="color: yellow" onclick="setGrid('yellow')" id="gridyellow">Yellow</span>
-									<span style="color: fuchsia" onclick="setGrid('fuchsia')" id="gridfuchsia">Fuchsia</span>
-									<span style="color: crimson" onclick="setGrid('crimson')" id="gridcrimson">Red</span>
-									<span style="color: darkorange" onclick="setGrid('darkorange')" id="griddarkorange">Orange</span>
-									<span style="color: limegreen" onclick="setGrid('limegreen')" id="gridlimegreen">Green</span>
-								</div>
-								<div id="blockoptions" style="padding-bottom: 80px">Change the success block color:<br>
-									<span style="color: cyan" onclick="setSuccess('cyan')" id="blockcyan">Cyan</span>
-									<span style="color: yellow" onclick="setSuccess('yellow')" id="blockyellow">Yellow</span>
-									<span style="color: fuchsia" onclick="setSuccess('fuchsia')" id="blockfuchsia">Fuchsia</span>
-									<span style="color: crimson" onclick="setSuccess('crimson')" id="blockcrimson">Red</span>
-									<span style="color: darkorange" onclick="setSuccess('darkorange')" id="blockdarkorange">Orange</span>
-									<span style="color: limegreen" onclick="setSuccess('limegreen')" id="blocklimegreen">Green</span>
-								</div>
-								<div id="erroroptions" style="padding-bottom: 80px">Change the error block color:<br>
-									<span style="color: cyan" onclick="setError('cyan')" id="errorcyan">Cyan</span>
-									<span style="color: yellow" onclick="setError('yellow')" id="erroryellow">Yellow</span>
-									<span style="color: fuchsia" onclick="setError('fuchsia')" id="errorfuchsia">Fuchsia</span>
-									<span style="color: crimson" onclick="setError('crimson')" id="errorcrimson">Red</span>
-									<span style="color: darkorange" onclick="setError('darkorange')" id="errordarkorange">Orange</span>
-									<span style="color: limegreen" onclick="setError('limegreen')" id="errorlimegreen">Green</span>
-								</div>
-								<div onclick="resetToMenu()"" class=" settingsLabel">
-									Return to Menu
-								</div>
-							</div>
-						</div>
-
+					<div>Age:<br>
+						<input type="number" id="age" autocomplete="off" oninput="clack()">
 					</div>
+					<div id="gender">Gender:<br>
+						<span id="male" oninput="clack()" onclick="selectSex('male')">Male</span>
+						<span id="female" oninput="clack()" onclick="selectSex('female')">Female</span>
+						<span id="other" oninput="clack()" onclick="selectSex('other')">Other</span>
+					</div>
+					<div>Location:<br>
+						<input type="text" id="location" autocomplete="off" oninput="clack()">
+					</div>
+					<div onclick="createUser()">Submit</div>
+					<div id="incompleteForm" style="display:none">Please complete the form</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="userCreated" style="display:none">
+			<div class="centerlarge">
+				<div>
+					<div style="padding-bottom: 40px;">Account Created</div>
+					<div id="userCreatedContinue" onclick="userCreatedBackToMenu()">Continue</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="play" style="display:none;">
+			<div class="centersmall">
+				<div>
+					<div id="gameStats">
+						<span id="timer" class="trackers"></span>
+						<span id="turns" class="trackers"></span>
+						<span id="errors" class="trackers"></span>
+					</div>
+					<div id="board"></div>
+					<div>
+						<span id="elementsOnGrid" class="trackers"></span>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<div id="gameOver" style="display: none">
+			<div class="centermedium">
+				<div>
+					<div id="youWon" style="display: none; margin-top: 20vh;" class="large">
+						<div style="margin-bottom: 50px;">You Won!</div>
+						<div id="nextLevel" style="cursor: pointer" onclick="nextLevel()">Go to next level</div>
+					</div>
+					<div id="youLost" style="display: none" class="youWonOrLost">
+						<div style="margin-bottom: 50px;">You Lost</div>
+						<div id="loserToMenu" style="cursor: pointer" onclick="loserToMenu()">Go to menu</div>
+					</div>
+					<div id="stats"></div>
+				</div>
+			</div>
+
+		</div>
+
+		<div id="rollCredits" style="display: none">
+			<div class="centersmall">
+				<div>
+					<div id="showCredits" style="font-size: 32px; line-height: 40px;">
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div id="settings" style="display:none;">
+			<div class="centersmall">
+				<div>
+					<div id="gridoptions" style="padding-bottom: 80px">Change the grid outline color:<br>
+						<span style="color: cyan" onclick="setGrid('cyan')" id="gridcyan">Cyan</span>
+						<span style="color: yellow" onclick="setGrid('yellow')" id="gridyellow">Yellow</span>
+						<span style="color: fuchsia" onclick="setGrid('fuchsia')" id="gridfuchsia">Fuchsia</span>
+						<span style="color: crimson" onclick="setGrid('crimson')" id="gridcrimson">Red</span>
+						<span style="color: darkorange" onclick="setGrid('darkorange')" id="griddarkorange">Orange</span>
+						<span style="color: limegreen" onclick="setGrid('limegreen')" id="gridlimegreen">Green</span>
+					</div>
+					<div id="blockoptions" style="padding-bottom: 80px">Change the success block color:<br>
+						<span style="color: cyan" onclick="setSuccess('cyan')" id="blockcyan">Cyan</span>
+						<span style="color: yellow" onclick="setSuccess('yellow')" id="blockyellow">Yellow</span>
+						<span style="color: fuchsia" onclick="setSuccess('fuchsia')" id="blockfuchsia">Fuchsia</span>
+						<span style="color: crimson" onclick="setSuccess('crimson')" id="blockcrimson">Red</span>
+						<span style="color: darkorange" onclick="setSuccess('darkorange')" id="blockdarkorange">Orange</span>
+						<span style="color: limegreen" onclick="setSuccess('limegreen')" id="blocklimegreen">Green</span>
+					</div>
+					<div id="erroroptions" style="padding-bottom: 80px">Change the error block color:<br>
+						<span style="color: cyan" onclick="setError('cyan')" id="errorcyan">Cyan</span>
+						<span style="color: yellow" onclick="setError('yellow')" id="erroryellow">Yellow</span>
+						<span style="color: fuchsia" onclick="setError('fuchsia')" id="errorfuchsia">Fuchsia</span>
+						<span style="color: crimson" onclick="setError('crimson')" id="errorcrimson">Red</span>
+						<span style="color: darkorange" onclick="setError('darkorange')" id="errordarkorange">Orange</span>
+						<span style="color: limegreen" onclick="setError('limegreen')" id="errorlimegreen">Green</span>
+					</div>
+					<div onclick="leaveSettings()" id="settingsLabel">
+						Return to Menu
+					</div>
+				</div>
+			</div>
+
+		</div>
 
 
 
 
 
-					<script src="nonogram.js" async defer></script>
+		<script src="nonogram.js" async defer></script>
 </body>
 
 </html>

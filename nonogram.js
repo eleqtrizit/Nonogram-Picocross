@@ -47,8 +47,42 @@ var user = {};
 
 function checkLogin() {
 	// don't even bother if we are not logged in locally
-	if (user.username.length > 0) {
+	if (typeof user.username !== "undefined") {
 		postData(user, "/login.php", function(data) {
+			// we are not logged in. Destroy storage
+			if (data.isLoggedIn === false) {
+				console.log(
+					"User session has expired or password has changed."
+				);
+				user = {};
+				saveStorage();
+				document.getElementById("selectUserFunctions").style.display =
+					"block";
+				document.getElementById("selectUploadAvatar").style.display =
+					"none";
+			} else {
+				console.log("User is logged in.");
+				document.getElementById("selectUserFunctions").style.display =
+					"none";
+				if (
+					typeof user.avatarpath !== "undefined" &&
+					user.avatarpath.length === 0
+				) {
+					document.getElementById(
+						"selectUploadAvatar"
+					).style.display = "block";
+				}
+			}
+		});
+	} else {
+		document.getElementById("selectUserFunctions").style.display = "block";
+		document.getElementById("selectUploadAvatar").style.display = "none";
+	}
+}
+
+function login(obj) {
+	if (typeof obj.username === "undefined") {
+		postData(obj, "/login.php", function(data) {
 			// we are not logged in. Destroy storage
 			if (data.isLoggedIn === false) {
 				console.log(
@@ -60,7 +94,10 @@ function checkLogin() {
 				console.log("User is logged in.");
 				document.getElementById("selectUserFunctions").style.display =
 					"none";
-				if (user.avatarpath.length === 0) {
+				if (
+					typeof user.avatarpath !== "undefined" &&
+					user.avatarpath.length === 0
+				) {
 					document.getElementById(
 						"selectUploadAvatar"
 					).style.display = "block";
@@ -98,6 +135,7 @@ function beginLoading() {
 	playSound("menuMusic");
 	playSound("menuSelect");
 	flashText("startGame");
+	checkLogin();
 	activateSection("menu", 500);
 }
 
@@ -144,12 +182,11 @@ function nextLevel() {
 function resetToMenu(flashme = "") {
 	clearParams();
 	stopAllSound();
-
+	checkLogin();
 	if (flashme.length !== "") {
 		flashText(flashme);
 	}
 	playSound("menuSelect");
-
 	activateSection("menu", 500, function() {
 		playSound("menuMusic");
 		activateVideoBG("openingVid.gif");
@@ -271,9 +308,16 @@ function createUser() {
 function userCreatedBackToMenu() {
 	flashText("userCreatedContinue");
 	playSound("menuSelect");
-	document.getElementById("selectUserFunctions").style.display = "none";
-	document.getElementById("selectUploadAvatar").style.display = "block";
+	checkLogin();
 	activateSection("menu", 500);
+}
+
+function leaveSettings() {
+	flashText("settingsLabel");
+	playSound("menuSelect");
+	activateSection("menu", 500, function() {
+		activateVideoBG("openingVid.gif");
+	});
 }
 
 function elementsOnGrid() {
@@ -459,7 +503,7 @@ function rollCredits() {
 	let interval = setInterval(function() {
 		console.log(i);
 		target["showCredits"].innerHTML = credits[i++];
-		if (i == credits.length) {
+		if (i === credits.length) {
 			target["showCredits"].innerHTML = "";
 			clearInterval(interval);
 			resetBoard();
@@ -470,6 +514,7 @@ function rollCredits() {
 				activateVideoBG("openingVid.gif");
 				stopAllSound();
 				playSound("menuMusic");
+				checkLogin();
 				activateSection("menu");
 			};
 			target["showCredits"].appendChild(d);
@@ -637,6 +682,7 @@ function postData(obj, url, callback) {
 // ---------------- initialization and preloading
 
 function init() {
+	checkLogin();
 	// preload for performance and almost must come first!
 	buildIdTargets();
 	// set initial color scheme
@@ -654,12 +700,12 @@ function init() {
 			} else {
 				msg += "Upload complete.";
 				document.getElementById("tryAgain").style.display = "none";
-				checkLogin();
+				login(user);
 			}
 		} else {
 			msg += "Upload complete.";
 			document.getElementById("tryAgain").style.display = "none";
-			checkLogin();
+			login(user);
 		}
 		document.getElementById("uploadMsg").innerHTML = msg;
 		//clearParams();
