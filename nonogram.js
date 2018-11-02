@@ -13,7 +13,7 @@ var level = 0;
 var levelData = {};
 var maxErrors = 5;
 
-var noop = function() {}; // do nothing.
+var noop = function() {}; // do nothing function to set as default callback
 
 var gameBoard = {
 	name: "",
@@ -45,75 +45,90 @@ var sesh = {
 
 var user = {};
 
-function checkLogin() {
-	// don't even bother if we are not logged in locally
-	if (typeof user.username !== "undefined") {
-		postData(user, "/login.php", function(data) {
-			// we are not logged in. Destroy storage
-			if (data.isLoggedIn === false) {
-				console.log(
-					"User session has expired or password has changed."
-				);
-				user = {};
-				saveStorage();
-				document.getElementById("selectUserFunctions").style.display =
-					"block";
-				document.getElementById("selectUploadAvatar").style.display =
-					"none";
-			} else {
-				console.log("User is logged in.");
-				document.getElementById("selectUserFunctions").style.display =
-					"none";
-				if (
-					typeof user.avatarpath !== "undefined" &&
-					user.avatarpath.length === 0
-				) {
-					document.getElementById(
-						"selectUploadAvatar"
-					).style.display = "block";
-				}
-			}
-		});
+function configureUserMenus() {
+	console.log(user.username);
+	if (
+		typeof user !== "undefined" &&
+		typeof user.username !== "undefined" &&
+		user.username !== null &&
+		user.username.length > 0
+	) {
+		document.getElementById("selectLogin").style.display = "none";
+		document.getElementById("selectCreateUser").style.display = "none";
+		document.getElementById("selectUploadAvatar").style.display = "block";
 	} else {
-		document.getElementById("selectUserFunctions").style.display = "block";
+		document.getElementById("selectLogin").style.display = "block";
+		document.getElementById("selectCreateUser").style.display = "block";
 		document.getElementById("selectUploadAvatar").style.display = "none";
+	}
+
+	// if user has avatar
+	if (
+		typeof user !== "undefined" &&
+		typeof user.avatarpath !== "undefined" &&
+		user.avatarpath !== null &&
+		user.avatarpath.length > 0
+	) {
+		document.getElementById("avatarImage").innerHTML = "";
+		let i = document.createElement("img");
+		i.src = "avatars/" + user.avatarpath;
+		i.width = "200";
+		document.getElementById("avatarImage").appendChild(i);
+		document.getElementById("noAvatar").style.display = "none";
+		document.getElementById("avatarImage").style.display = "block";
+	} else {
+		document.getElementById("noAvatar").style.display = "block";
+		document.getElementById("avatarImage").style.display = "none";
 	}
 }
 
-function login(obj) {
+function login(obj = user, callback = noop) {
+	console.log(obj);
 	if (typeof obj.username === "undefined") {
+		loadStorage();
+		obj = user;
+	}
+
+	if (typeof obj.username !== "undefined") {
 		postData(obj, "/login.php", function(data) {
 			// we are not logged in. Destroy storage
-			if (data.isLoggedIn === false) {
-				console.log(
-					"User session has expired or password has changed."
-				);
+			console.log(data);
+			if (data.isLoggedIn === "false" || data.isLoggedIn === false) {
+				console.log("User session has expired or password has changed.");
 				user = {};
 				saveStorage();
 			} else {
 				console.log("User is logged in.");
-				document.getElementById("selectUserFunctions").style.display =
-					"none";
-				if (
-					typeof user.avatarpath !== "undefined" &&
-					user.avatarpath.length === 0
-				) {
-					document.getElementById(
-						"selectUploadAvatar"
-					).style.display = "block";
-				}
+				user.username = data.username;
+				user.password = data.password;
+				user.avatarpath = data.avatarpath;
+				saveStorage();
 			}
+			callback();
 		});
+	} else {
+		user = {};
+		saveStorage();
+		callback();
 	}
+}
+
+function loginUser() {
+	let obj = {
+		username: document.getElementById("username2").value,
+		password: document.getElementById("password2").value
+	};
+	console.log(obj);
+	login(obj, function() {
+		configureUserMenus();
+		activateSection("userLoggedIn");
+	});
 }
 
 function getFileName() {
 	var fullPath = document.getElementById("fileToUpload").value;
 	if (fullPath) {
-		var startIndex =
-			fullPath.indexOf("\\") >= 0
-				? fullPath.lastIndexOf("\\")
-				: fullPath.lastIndexOf("/");
+		var startIndex = fullPath.indexOf("\\") >= 0 ? fullPath.lastIndexOf("\\") : fullPath.lastIndexOf("/");
 		var filename = fullPath.substring(startIndex);
 		if (filename.indexOf("\\") === 0 || filename.indexOf("/") === 0) {
 			filename = filename.substring(1);
@@ -126,16 +141,17 @@ function submitAvatar() {
 	// use form element below to help check if the file upload is successful
 	document.getElementById("fileName").value = getFileName();
 	document.getElementById("avatarForm").submit();
-	checkLogin();
+	login();
 }
 
 function beginLoading() {
 	loadStorage();
-	checkLogin();
+	login({}, function() {
+		configureUserMenus();
+	});
 	playSound("menuMusic");
 	playSound("menuSelect");
 	flashText("startGame");
-	checkLogin();
 	activateSection("menu", 500);
 }
 
@@ -182,7 +198,7 @@ function nextLevel() {
 function resetToMenu(flashme = "") {
 	clearParams();
 	stopAllSound();
-	checkLogin();
+	login();
 	if (flashme.length !== "") {
 		flashText(flashme);
 	}
@@ -206,7 +222,7 @@ function tryAgain() {
 
 function selectUserFunctions() {
 	playSound("menuSelect");
-	flashText("selectUserFunctions");
+	flashText("noAvatar");
 	activateSection("userFunctions", 500, function() {});
 }
 
@@ -240,6 +256,14 @@ function gotoSettings() {
 	});
 }
 
+function gotoHelp() {
+	flashText("selectHelp");
+	playSound("menuSelect");
+	activateSection("helpPage", 500, function() {
+		activateVideoBG("none");
+	});
+}
+
 var selectedSex = "";
 function selectSex(sex) {
 	let sexes = document.getElementById("gender").children;
@@ -256,15 +280,7 @@ function selectSex(sex) {
 
 function createUser() {
 	let problems = false;
-	let checkFields = [
-		"username",
-		"password",
-		"email",
-		"firstname",
-		"lastname",
-		"age",
-		"location"
-	];
+	let checkFields = ["username", "password", "email", "firstname", "lastname", "age", "location"];
 	let obj = {};
 
 	for (const field of checkFields) {
@@ -292,8 +308,7 @@ function createUser() {
 		postData(obj, "create_user.php", function(data) {
 			console.log(data);
 			if (data[0].username.length === 0) {
-				document.getElementById("incompleteForm").innerHTML =
-					"Username already taken.";
+				document.getElementById("incompleteForm").innerHTML = "Username already taken.";
 			} else {
 				// save user
 				user = data[0];
@@ -307,8 +322,8 @@ function createUser() {
 
 function userCreatedBackToMenu() {
 	flashText("userCreatedContinue");
+	flashText("userCreatedContinue2");
 	playSound("menuSelect");
-	checkLogin();
 	activateSection("menu", 500);
 }
 
@@ -321,8 +336,7 @@ function leaveSettings() {
 }
 
 function elementsOnGrid() {
-	target["elementsOnGrid"].innerHTML =
-		"Elements on Grid: " + gameBoard.length * gameBoard.length;
+	target["elementsOnGrid"].innerHTML = "Elements on Grid: " + gameBoard.length * gameBoard.length;
 }
 
 function startTimer() {
@@ -373,8 +387,7 @@ function activateSection(id, delayUntilChangover = 0, callback = noop) {
 	let changeOver = function() {
 		let c = main.children;
 		for (let i = 0; i < c.length; i++) {
-			if (c[i].id !== "")
-				document.getElementById(c[i].id).style.display = "none";
+			if (c[i].id !== "") document.getElementById(c[i].id).style.display = "none";
 		}
 		document.getElementById(id).style.display = "inline";
 		callback();
@@ -514,7 +527,7 @@ function rollCredits() {
 				activateVideoBG("openingVid.gif");
 				stopAllSound();
 				playSound("menuMusic");
-				checkLogin();
+				login();
 				activateSection("menu");
 			};
 			target["showCredits"].appendChild(d);
@@ -682,7 +695,9 @@ function postData(obj, url, callback) {
 // ---------------- initialization and preloading
 
 function init() {
-	checkLogin();
+	login({}, function() {
+		configureUserMenus();
+	});
 	// preload for performance and almost must come first!
 	buildIdTargets();
 	// set initial color scheme
@@ -715,8 +730,7 @@ function init() {
 	}
 
 	// deactivate the 13x13 grid for mobile devices
-	var iOS =
-		!!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+	var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 	var android = !!navigator.platform && /android/.test(navigator.platform);
 	if (iOS || android) {
 		target["startGame13"].style.display = "none";

@@ -166,7 +166,8 @@ class NONOData
         $max = $nono->Get("select coalesce(max(id)+1,0) as max from players;");
         while ($row = $max->fetch_assoc()) {
             $maxx = $row["max"];
-            $query="insert into players values($maxx,'$username',PASSWORD('$password'),'$email','$firstname','$lastname',$age,'$gender','$location','')";
+            $hashpass = password_hash($password, PASSWORD_BCRYPT);
+            $query="insert into players values($maxx,'$username','$hashpass','$email','$firstname','$lastname',$age,'$gender','$location','')";
             $nono->InsertQuietly($query);
 
             return $this->CheckLogin($username);

@@ -89,9 +89,10 @@
 					<div onclick="startGame(13)" id="startGame13" style="cursor: pointer;">
 						13x3
 					</div>
-					<div id="selectUserFunctions" onclick="selectUserFunctions()" style="cursor: pointer; display:none">Sign in/up</div>
-					<div id="selectUploadAvatar" onclick="selectUploadAvatar()" style="cursor: pointer; display:none">Upload Avatar</div>
+					<div id="noAvatar" onclick="selectUserFunctions()" style="cursor: pointer; display:none">Account</div>
+					<div id="avatarImage" onclick="selectUserFunctions()" style="cursor: pointer; display:none"></div>
 					<div class="settingsLabel" onclick="gotoSettings()" id="selectSettings">Settings</div>
+					<div id="selectHelp" onclick="gotoHelp()">Help</div>
 				</div>
 			</div>
 		</div>
@@ -99,8 +100,10 @@
 		<div id="userFunctions" style="display:none">
 			<div class="centermedium">
 				<div>
-					<div onclick="selectLogin()" style="cursor: pointer;" id="selectLogin">Login</div>
-					<div onclick="createUserMenu()" style="cursor: pointer;" id="selectCreateUser">Sign Up</div>
+					<div onclick="selectLogin()" style="cursor: pointer; display:none" id="selectLogin">Login</div>
+					<div onclick="createUserMenu()" style="cursor: pointer; display:none" id="selectCreateUser">Sign Up</div>
+					<div id="selectUploadAvatar" onclick="selectUploadAvatar()" style="cursor: pointer; display:none">Upload Avatar</div>
+					<div id="back2Menu" onclick="resetToMenu('back2Menu')">Back to Menu</div>
 				</div>
 			</div>
 		</div>
@@ -139,6 +142,7 @@
 			</div>
 		</div>
 
+
 		<div id="createUser">
 			<div class="centersmall">
 				<div class="createUser">
@@ -172,6 +176,7 @@
 					</div>
 					<div onclick="createUser()">Submit</div>
 					<div id="incompleteForm" style="display:none">Please complete the form</div>
+					<div id="back2Menu2" onclick="resetToMenu('back2Menu2')">Back to Menu</div>
 				</div>
 			</div>
 		</div>
@@ -181,6 +186,48 @@
 				<div>
 					<div style="padding-bottom: 40px;">Account Created</div>
 					<div id="userCreatedContinue" onclick="userCreatedBackToMenu()">Continue</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="userLoggedIn" style="display:none">
+			<div class="centerlarge">
+				<div>
+					<div style="padding-bottom: 40px;">Login Complete</div>
+					<div id="userCreatedContinue2" onclick="userCreatedBackToMenu()">Continue</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="loginPage" style="display:none">
+			<div class="centermedium">
+				<div>
+					<div>
+						Username:<br>
+						<input type="text" id="username2" autocomplete="off" oninput="clack()"><br>
+					</div>
+					<div>
+						Password:<br>
+						<input type="password" id="password2" autocomplete="off" oninput="clack()">
+					</div>
+					<div onclick="loginUser()">Submit</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div id="helpPage" style="display:none;">
+			<div class="centersmall">
+				<div>
+					How to play:<br>
+					<br>
+					You have to find the squares of the board, revealing the picture underneath, using the hints on the edges.<br>
+					<br>
+					The numbers represent streaks of consecutive block. Use them as hints.<br>
+					<br>
+					<img src="assets/helpmap.png" width="400"><br>
+					<br>
+					<div id="back2Menu3" onclick="resetToMenu('back2Menu3')">Back to Menu</div>
 				</div>
 			</div>
 		</div>

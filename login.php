@@ -13,17 +13,18 @@ $dbusername = $row['username'];
 $dbpassword = $row['password'];
 $dbavatarpath = $row['avatarpath'];
 
+$ret->sentUsername = $username;
+$ret->isLoggedIn = "false";
+
 // probably need to check case of username
-if ($password===$dbpassword){
+if ($dbpassword != null && (password_verify($password,$dbpassword) || $password == $dbpassword)){
 	$ret->isLoggedIn = "true";
 	$ret->username = $dbusername; // use official username from db
-	$ret->avatarPath = $dbavatarpath;
-}
-else {
-	$ret->isLoggedIn = "false";
+	$ret->avatarpath = $dbavatarpath;
+	$ret->password = $dbpassword;
 }
 
-$data->JSONifyResults($result);
+echo json_encode($ret);
 
 
 

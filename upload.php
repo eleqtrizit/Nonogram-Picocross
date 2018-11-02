@@ -25,11 +25,16 @@ if(isset($_POST["submit"])) {
 
 	}
 }
+
+
 // Check if file already exists
-/*if (file_exists($target_file)) {
-	$error = 2;
+$newI=0;
+while (file_exists($target_file)) {
+	//$error = 2;
+	$target_file = $target_dir . $newI . basename($_FILES["fileToUpload"]["name"]);
+	$newI++;
 }
-*/
+
 
 // Check file size
 if ($_FILES["fileToUpload"]["size"] > 1000000) {
