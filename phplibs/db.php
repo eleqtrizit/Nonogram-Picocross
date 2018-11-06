@@ -176,7 +176,7 @@ class NONOData
 
     public function CheckLogin($username){
         $nono = new db($this->returnType);
-        $query="select username,password,avatarpath from players where username='$username'";
+        $query="select id,username,password,avatarpath from players where username='$username'";
         return $nono->Get($query);
     }
 
@@ -192,6 +192,27 @@ class NONOData
 	    $query="select username,passhash,adminlevel from users where username='$username' and passhash='$passhash'";
 	    return $nono->Get($query);
     }
+
+    public function GetScoreboard($gridType,$gameType){
+        $nono = new db($this->returnType);
+        $query="";
+        if ($gameType=='arcade'){
+            $query="select username,duration,errorcount,gameType,score from games,players where playerid=id and gridType=$gridType and gameType='$gameType' order by score desc limit 5";
+        }
+        else {
+            $query="select username,duration,errorcount,gameType,score from games,players where playerid=id and gridType=$gridType and gameType='$gameType' order by duration asc limit 5";
+        }
+       
+        return $nono->Get($query);
+    }
+
+    public function UpdateScoreboard($id,$duration,$errorCount,$score,$gridType,$gameType)
+    {
+        $nono = new db($this->returnType);
+        $query="insert into games values($id,$duration,$errorCount,$score,$gridType,'$gameType');";
+        $nono->Insert($query);
+    }
+
 
     /**
      * Pass in the MySQL results from the functions to turn into JSON

@@ -11,8 +11,9 @@ body {
 	font-family: "Press Start 2P", cursive;
 	color: yellow;
 	background-color: black;
-	text-shadow: #000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px,
-		#000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px;
+	text-shadow: #000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px,
+		#000 0px 0px 1px;
+	overflow: hidden;
 }
 
 body > div {
@@ -130,7 +131,7 @@ input {
 	font-size: 40px;
 	padding-bottom: 20px;
 	display: table;
-	min-height: 80vh;
+	height: 90vh;
 	width: 100%;
 	text-align: center;
 }
@@ -146,10 +147,10 @@ input {
 }
 
 .centermedium {
-	font-size: 40px;
-	padding-bottom: 20px;
+	font-size: 32px;
+	padding-bottom: 15px;
 	display: table;
-	min-height: 80vh;
+	height: 80vh;
 	width: 100%;
 	text-align: center;
 }
@@ -164,10 +165,29 @@ input {
 	line-height: 60px;
 }
 
+.centermediumsmall {
+	font-size: 18px;
+	padding-bottom: 30px;
+	display: table;
+	height: 90vh;
+	width: 100%;
+	text-align: center;
+}
+
+.centermediumsmall > div {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.centermediumsmall > div > div {
+	padding-bottom: 50px;
+	line-height: 60px;
+}
+
 .centersmall {
 	font-size: 18px;
 	display: table;
-	min-height: 80vh;
+	height: 90vh;
 	width: 100%;
 	text-align: center;
 }
@@ -197,8 +217,13 @@ input {
 	padding-right: 30px;
 }
 
-.settingsLabel {
-	cursor: pointer;
+.small {
+	font-size: 24px;
+	padding-bottom: 10px !important;
+}
+
+.desc {
+	font-size: 14px;
 }
 
 /* game board---------------------------------------------------- */

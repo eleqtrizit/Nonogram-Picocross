@@ -19,6 +19,7 @@ $ret->isLoggedIn = "false";
 // probably need to check case of username
 if ($dbpassword != null && (password_verify($password,$dbpassword) || $password == $dbpassword)){
 	$ret->isLoggedIn = "true";
+	$ret->id = $row['id'];
 	$ret->username = $dbusername; // use official username from db
 	$ret->avatarpath = $dbavatarpath;
 	$ret->password = $dbpassword;
