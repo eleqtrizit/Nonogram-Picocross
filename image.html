@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Page Title</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="nonogram.css">
+</head>
+
+<body>
+	<canvas id="canvas">
+
+	</canvas>
+
+	<script>
+
+		function imageWorks(imgAddr) {
+			var canvas = document.getElementById("canvas");
+			var ctx = canvas.getContext("2d");
+			let l = 7;
+			img = new Image();
+			img.crossOrigin = "Anonymous";
+			img.src = imgAddr;
+
+			function getPixel(x, y) {
+				// returns RGB and Alpha
+				return ctx.getImageData(x, y, 1, 1).data;
+			}
+
+			function getImageAverage() {
+				let count = 0;
+				let total = 0;
+				for (let i = 0; i < l; i++) {
+					for (let j = 0; j < l; j++) {
+						let p = getPixel(i, j);
+						total += p[0] + p[1] + p[2] + p[3];
+						count++;
+					}
+				}
+				let avg = total / count;
+				return avg;
+			}
+
+			function processImage() {
+				let avg = getImageAverage();
+
+				for (let i = 0; i < l; i++) {
+					for (let j = 0; j < l; j++) {
+						let p = getPixel(i, j);
+						let total = p[0] + p[1] + p[2] + p[3];
+						if (total <= avg) {
+							console.log('on');
+						}
+						else {
+							console.log('off');
+						}
+					}
+				}
+			}
+
+			// will trigger automatically when the imageworks is called and the image has loaded
+			img.onload = function () {
+				var oc = document.createElement('canvas'), octx = oc.getContext('2d');
+
+				oc.width = l; // needed for the canvas
+				oc.height = l; // needed for the canvas
+
+				octx.drawImage(img, 0, 0, l, l);
+				ctx.drawImage(oc, 0, 0, l, l);
+				processImage();
+			}
+		}
+
+
+
+	</script>
+</body>
+
+</html>

@@ -1,7 +1,6 @@
 "use strict";
 
 var flexBasisCache;
-var target = {};
 
 var gameBoardOrig = {
 	name: "",
@@ -21,9 +20,62 @@ var square = {
 	isDisplayed: false
 };
 
+var difficulty = 50;
+
+function generateRandomGrid() {
+	let l = gameBoard.grid.length;
+	let row = [];
+	let totalSquaresUsed = 0;
+	row.length = l;
+	for (let i = 0; i < l; i++) {
+		let col = [];
+		col.length = l;
+		for (let j = 0; j < l; j++) {
+			col[j] = copyObject(square);
+			//document.getElementById(i + "|" + j + 1).style = flexBasisCache + "background-color: black";
+			if (isUsedSquare()) {
+				col[j].isUsed = true;
+				totalSquaresUsed++;
+			}
+		}
+		row[i] = col;
+	}
+	gameBoard.grid = row;
+	gameBoard.totalUsedSquares = totalSquaresUsed;
+	gameBoard.diff = difficulty;
+	gameBoard.length = l;
+	showGridInConsole();
+	countStreaks();
+	createGameBoardHTML();
+}
+
+function isUsedSquare() {
+	// randomize the usage of a square, plus add some difficulty from the slider
+	let p = Math.floor(Math.random() * 100) / 100;
+	let squareCutoff = difficultyMarkup() / 100;
+	if (p < squareCutoff) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+function difficultyMarkup() {
+	// don't let difficulty get too low or high
+	let diff = 50;
+	if (difficulty < 25) {
+		diff = 25;
+	} else if (difficulty > 75) {
+		diff = 75;
+	} else {
+		diff = difficulty;
+	}
+	return diff;
+}
+
 function edit(l) {
 	generateGrid(l);
-	createGameBoardHTML(l);
+	createGameBoardHTML();
 	// activate resave options
 	document.getElementById("save").style.display = "inline";
 	document.getElementById("resave").style.display = "none";
@@ -60,7 +112,7 @@ function loadLevel(id) {
 	postData(post, "/get_level.php?", function(data) {
 		gameBoard = JSON.parse(data[0].levelblob);
 		console.log(gameBoard);
-		createGameBoardHTML(gameBoard.length, true);
+		createGameBoardHTML();
 		// activate resave options
 		document.getElementById("save").style.display = "none";
 		document.getElementById("resave").style.display = "inline";
@@ -95,7 +147,7 @@ function generateGrid(l) {
 }
 
 // this seems redudant now but future features might add to this
-function createGameBoardHTML(length) {
+function createGameBoardHTML() {
 	let board = document.getElementById("board");
 	board.innerHTML = "";
 	let l = gameBoard.length + 1;
@@ -127,22 +179,17 @@ function createGameBoardHTML(length) {
 			board.appendChild(square);
 		}
 	}
-
-	// rebuild targets
-	buildIdTargets();
 }
 
 function pushSquare(i, j) {
-	console.log(i + " " + j);
 	let x = i - 1;
 	let y = j - 1;
-	console.log(gameBoard.grid[x][y].isUsed);
 	if (gameBoard.grid[x][y].isUsed) {
 		gameBoard.grid[x][y].isUsed = false;
-		target[i + "|" + j].style = flexBasisCache + "background-color: black";
+		document.getElementById(i + "|" + j).style = flexBasisCache + "background-color: black";
 	} else {
 		gameBoard.grid[x][y].isUsed = true;
-		target[i + "|" + j].style = flexBasisCache + "background-color: green";
+		document.getElementById(i + "|" + j).style = flexBasisCache + "background-color: green";
 	}
 }
 
@@ -233,8 +280,7 @@ function activateSection(id, delayUntilChangover = 0) {
 	let changeOver = function() {
 		let c = main.children;
 		for (let i = 0; i < c.length; i++) {
-			if (c[i].id !== "")
-				document.getElementById(c[i].id).style.display = "none";
+			if (c[i].id !== "") document.getElementById(c[i].id).style.display = "none";
 		}
 		document.getElementById(id).style.display = "inline";
 	};
@@ -245,17 +291,6 @@ function activateSection(id, delayUntilChangover = 0) {
 // ---------------- utility functions
 function copyObject(obj) {
 	return JSON.parse(JSON.stringify(obj));
-}
-
-function buildIdTargets() {
-	let ts = document.querySelectorAll("*[id]");
-	target = {};
-	for (let i = 0; i < ts.length; i++) {
-		target[ts[i].id] = ts[i];
-	}
-	var main = document.getElementById("main");
-	var audios = document.getElementById("audios");
-	var videos = document.getElementById("videos");
 }
 
 function postData(obj, url, callback) {
@@ -298,4 +333,70 @@ function showGridInConsole() {
 		}
 		console.log(colText);
 	}
+}
+
+function uploadImage() {
+	let imgAddr = document.getElementById("imageURL").value;
+	imageWorks(imgAddr, gameBoard.grid[0].length);
+	document.getElementById("imageURL").value = "";
+}
+
+function imageWorks(imgAddr, l) {
+	var canvas = document.getElementById("canvas");
+	var ctx = canvas.getContext("2d");
+	let img = new Image();
+	img.crossOrigin = "Anonymous";
+	//img.src = "/assets/Mario.png";
+	//img.src = "https://vignette.wikia.nocookie.net/mario/images/3/32/8_Bit_Mario.png/revision/latest?cb=20120602231304";
+	//img.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Emacs_Tetris_vector_based_detail.svg/200px-Emacs_Tetris_vector_based_detail.svg.png";
+	img.src = imgAddr;
+
+	function getPixel(x, y) {
+		// returns RGB and Alpha
+		return ctx.getImageData(x, y, 1, 1).data;
+	}
+
+	function getImageAverage() {
+		let count = 0;
+		let total = 0;
+		for (let i = 0; i < l; i++) {
+			for (let j = 0; j < l; j++) {
+				let p = getPixel(i, j);
+				total += p[0] + p[1] + p[2] + p[3];
+				count++;
+			}
+		}
+		let avg = total / count;
+		return avg;
+	}
+
+	function processImage() {
+		let avg = getImageAverage();
+		generateGrid(l);
+		for (let i = 0; i < l; i++) {
+			for (let j = 0; j < l; j++) {
+				let p = getPixel(j, i);
+				let total = p[0] + p[1] + p[2] + p[3];
+				if (total >= avg) {
+					gameBoard.grid[i][j].isUsed = true;
+				}
+			}
+		}
+	}
+
+	// will trigger automatically when the imageworks is called and the image has loaded
+	img.onload = function() {
+		var oc = document.createElement("canvas"),
+			octx = oc.getContext("2d");
+
+		oc.width = l; // needed for the canvas
+		oc.height = l; // needed for the canvas
+
+		octx.drawImage(img, 0, 0, l, l);
+		ctx.drawImage(oc, 0, 0, l, l);
+		oc.style.display = "none";
+		processImage();
+		createGameBoardHTML();
+		activateSection("editor");
+	};
 }

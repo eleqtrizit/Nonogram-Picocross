@@ -347,3 +347,12 @@ input {
 	-webkit-animation-iteration-count: 1;
 	-webkit-animation-timing-function: ease-in-out;
 }
+
+canvas,
+img {
+	image-rendering: optimizeQuality;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: optimize-contrast;
+	-ms-interpolation-mode: none;
+}

@@ -35,6 +35,8 @@
 		<div id="editor" style="display:none;">
 			<div onclick="activateSection('create')" class="back" id="backCreate">&lt; Back</div>
 			<div onclick="activateSection('displayLevels')" class="back" id="backEdit">&lt; Back</div>
+			<div onclick="generateRandomGrid()" style="cursor: pointer;">Randomize</div>
+			<div onclick="activateSection('upload')" style="cursor: pointer;">Upload Image</div>
 			<div id="board"></div>
 			<div class="boardname">
 				<br><br>
@@ -53,9 +55,18 @@
 			<div onclick="activateSection('editormenu')" class="back">&lt; Back to Main</div>
 			<div>Error</div>
 		</div>
+		<div id="upload" style="display:none;">
+			<div>
+				Link to image (URL):<br>
+				<input id="imageURL" type="text" size="40" style="font-size: 16px"><br>
+				<button onclick="uploadImage()"> Upload </button>
+			</div>
+		</div>
 
 	</div>
 	<script src="level_creator.js" async defer></script>
+
+	<canvas id="canvas" style="display:none"></canvas>
 </body>
 
 </html>
