@@ -128,7 +128,10 @@ function loginUser() {
 function getFileName() {
 	var fullPath = document.getElementById("fileToUpload").value;
 	if (fullPath) {
-		var startIndex = fullPath.indexOf("\\") >= 0 ? fullPath.lastIndexOf("\\") : fullPath.lastIndexOf("/");
+		var startIndex =
+			fullPath.indexOf("\\") >= 0
+				? fullPath.lastIndexOf("\\")
+				: fullPath.lastIndexOf("/");
 		var filename = fullPath.substring(startIndex);
 		if (filename.indexOf("\\") === 0 || filename.indexOf("/") === 0) {
 			filename = filename.substring(1);
@@ -296,7 +299,15 @@ function selectSex(sex) {
 
 function createUser() {
 	let problems = false;
-	let checkFields = ["username", "password", "email", "firstname", "lastname", "age", "location"];
+	let checkFields = [
+		"username",
+		"password",
+		"email",
+		"firstname",
+		"lastname",
+		"age",
+		"location"
+	];
 	let obj = {};
 
 	for (const field of checkFields) {
@@ -324,7 +335,8 @@ function createUser() {
 		postData(obj, "create_user.php", function(data) {
 			console.log(data);
 			if (data[0].username.length === 0) {
-				document.getElementById("incompleteForm").innerHTML = "Username already taken.";
+				document.getElementById("incompleteForm").innerHTML =
+					"Username already taken.";
 			} else {
 				// save user
 				user = data[0];
@@ -352,7 +364,8 @@ function leaveSettings() {
 }
 
 function elementsOnGrid() {
-	document.getElementById("elementsOnGrid").innerHTML = "Elements on Grid: " + gameBoard.length * gameBoard.length;
+	document.getElementById("elementsOnGrid").innerHTML =
+		"Elements on Grid: " + gameBoard.length * gameBoard.length;
 }
 
 var activeTimer;
@@ -390,7 +403,8 @@ function updateTurns() {
 }
 
 function updateErrors() {
-	document.getElementById("errors").innerHTML = "Errors: " + ++errorCount + "/" + maxErrors;
+	document.getElementById("errors").innerHTML =
+		"Errors: " + ++errorCount + "/" + maxErrors;
 }
 
 function activateVideoBG(gif) {
@@ -418,7 +432,13 @@ function activateVideoBGold(id) {
 
 // rotate the high scores at the main menu, just like an old arcade game would
 function rotateHighScoresWithMainMenu() {
-	let rotateSections = ["menu", "arcade7", "timetrial7", "arcade13", "timetrial13"];
+	let rotateSections = [
+		"menu",
+		"arcade7",
+		"timetrial7",
+		"arcade13",
+		"timetrial13"
+	];
 	let rotateIndex = 0;
 	// even though setInterval has its own timer, we don't want to accidently rotate away
 	// from the main menu if we just got back to it.  Let's make sure we rotate only after a
@@ -524,7 +544,8 @@ function activateSection(id, delayUntilChangover = 0, callback = noop) {
 	let changeOver = function() {
 		let c = main.children;
 		for (let i = 0; i < c.length; i++) {
-			if (c[i].id !== "") document.getElementById(c[i].id).style.display = "none";
+			if (c[i].id !== "")
+				document.getElementById(c[i].id).style.display = "none";
 		}
 		document.getElementById(id).style.display = "inline";
 		callback();
@@ -551,12 +572,14 @@ function pushSquare(i, j) {
 	if (pushMode === "marked") {
 		if (gameBoard.grid[x][y].isUsed) {
 			gameBoard.grid[x][y].isDisplayed = true;
-			document.getElementById(i + "|" + j).style = flexBasisCache + successBlockColor;
+			document.getElementById(i + "|" + j).style =
+				flexBasisCache + successBlockColor;
 			document.getElementById("rightSound").play();
 		} else {
 			updateErrors();
 			gameBoard.grid[x][y].isDisplayed = true;
-			document.getElementById(i + "|" + j).style = flexBasisCache + errorBlockColor;
+			document.getElementById(i + "|" + j).style =
+				flexBasisCache + errorBlockColor;
 			if (errorCount < maxErrors) {
 				document.getElementById("wrongSound").play();
 			}
@@ -884,6 +907,20 @@ function init() {
 		document.getElementById("startGame13").style.display = "none";
 	}
 }
+
+// move suggestion
+//   why am I making this?  just a quick way to check boundaries
+function doesSquareExist(i, j) {
+	if (
+		typeof gameBoard[i] === "undefined" ||
+		typeof gameBoard[i][j] === "undefined"
+	) {
+		return false;
+	}
+	return true;
+}
+
+function squareScore(i, j) {}
 
 // error handling
 function errors(index) {
