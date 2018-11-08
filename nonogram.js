@@ -6,7 +6,7 @@ var fromId = "welcome";
 var pushMode = "marked"; // alternative is X'ed, to indicate to mark
 var flexBasisCache;
 var turnCount = -1;
-var errorCount = -1;
+var errorCount = 0;
 var successBlockColor = "background-color: cyan;";
 var errorBlockColor = "background-color: red;";
 var level = 0;
@@ -34,7 +34,7 @@ var square = {
 
 function resetBoard() {
 	turnCount = -1;
-	errorCount = -1;
+	errorCount = 0;
 }
 
 var sesh = {
@@ -391,7 +391,7 @@ function updateTurns() {
 }
 
 function updateErrors() {
-	document.getElementById("errors").innerHTML = "Errors: " + ++errorCount + "/" + maxErrors;
+	document.getElementById("errors").innerHTML = "Errors: " + errorCount + "/" + maxErrors;
 }
 
 function activateVideoBG(gif) {
@@ -555,6 +555,7 @@ function pushSquare(i, j) {
 			document.getElementById(i + "|" + j).style = flexBasisCache + successBlockColor;
 			document.getElementById("rightSound").play();
 		} else {
+			errorCount++;
 			updateErrors();
 			gameBoard.grid[x][y].isDisplayed = true;
 			document.getElementById(i + "|" + j).style = flexBasisCache + errorBlockColor;
@@ -760,6 +761,17 @@ function writeColStreaksToGrid() {
 		} else {
 			document.getElementById(id).children[0].innerHTML = t;
 		}
+
+		// reduce padding on bigger grid
+		if (gameBoard.grid.length > 7 && gameBoard.colStreaks[i].length > 2) {
+			document.getElementById(id).children[0].style.paddingTop = "15%";
+			document.getElementById(id).children[0].style.fontSize = "12px";
+		} else {
+			document.getElementById(id).children[0].style.paddingTop = "35%";
+			document.getElementById(id).children[0].style.fontSize = "12px";
+		}
+
+		document.getElementById(id).children[0].className = "side-col";
 	}
 }
 
@@ -767,11 +779,24 @@ function writeRowStreaksToGrid() {
 	for (let i = 0; i < gameBoard.rowStreaks.length; i++) {
 		let t = "";
 		for (let j = 0; j < gameBoard.rowStreaks[i].length; j++) {
-			t += gameBoard.rowStreaks[i][j] + "<br>";
+			t += gameBoard.rowStreaks[i][j] + " ";
 		}
 		let offset = i + 1;
 		let id = "0|" + offset;
-		document.getElementById(id).children[0].innerHTML = t;
+		if (t.length === 0) {
+			document.getElementById(id).children[0].innerHTML = 0;
+		} else {
+			document.getElementById(id).children[0].innerHTML = t;
+		}
+
+		// reduce padding on bigger grid
+		if (gameBoard.grid.length > 7 && gameBoard.rowStreaks[i].length > 2) {
+			document.getElementById(id).children[0].style.paddingTop = "5%";
+			document.getElementById(id).children[0].style.fontSize = "12px";
+		} else {
+			document.getElementById(id).children[0].style.paddingTop = "15%";
+			document.getElementById(id).children[0].style.fontSize = "12px";
+		}
 		document.getElementById(id).children[0].className = "top-row";
 	}
 }
@@ -929,6 +954,10 @@ function bestSuggestion(isCenterSquareMarked) {
 
 	for (let i = 0; i < gameBoard.grid.length; i++) {
 		for (let j = 0; j < gameBoard.grid.length; j++) {
+			// don't pay any attention to already touched blocks
+			if (gameBoard.grid[i][j].isDisplayed) {
+				continue;
+			}
 			let score = getSuggestionScore(i, j);
 
 			if (isCenterSquareMarked === gameBoard.grid[i][j].isUsed) {
@@ -957,7 +986,8 @@ function findBestMarkedSuggestion() {
 function findBestUnmarkedSuggestion() {
 	let square = bestSuggestion(false);
 	animateSuggestion(square, errorBlockColor, function() {
-		errorCount--;
+		errorCount = errorCount - 1;
+		updateErrors();
 	});
 }
 
@@ -972,11 +1002,13 @@ function animateSuggestion(square, blockColor, callback = noop) {
 			iterator = -iterator;
 			maxBounces--;
 		}
-		document.getElementById(square.i + "|" + square.j).style.backgroundColor = `rgb(${val}, ${val}, ${val})`;
+		let i = square.i + 1;
+		let j = square.j + 1;
+		document.getElementById(i + "|" + j).style.backgroundColor = `rgb(${val}, ${val}, ${val})`;
 
 		val += iterator;
 		if (maxBounces === 0) {
-			pushSquare(square.i, square.j);
+			pushSquare(square.i + 1, square.j + 1);
 			callback();
 			clearInterval(anim);
 		}

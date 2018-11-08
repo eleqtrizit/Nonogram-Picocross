@@ -228,9 +228,14 @@ input {
 
 /* game board---------------------------------------------------- */
 
+.bottom {
+	z-index: 100;
+}
+
 #board {
 	display: flex;
 	flex-wrap: wrap;
+	z-index: 0;
 }
 
 .square {
@@ -256,9 +261,11 @@ input {
 	left: 0;
 	height: 100%;
 	width: 100%;
-	padding-top: 50%;
+	/*padding-top: 50%;*/
+	z-index: 0;
 }
 
+/* default CSS for 7 grids, otherwise changed in JS */
 .square .top-row {
 	position: absolute;
 	top: 0;
@@ -266,7 +273,26 @@ input {
 	height: 100%;
 	width: 100%;
 	line-height: 16px;
-	padding-top: 25%;
+	padding-top: 10px;
+}
+
+/* default CSS for 7 grids, otherwise changed in JS */
+.square .side-col {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	line-height: 16px;
+	padding-top: 45%;
+}
+
+@media only screen and (max-width: 720px) {
+	.side-col {
+		font-size: 12px;
+	}
+	.top-row {
+		font-size: 12px;
+	}
 }
 
 @media only screen and (max-width: 812px) {
