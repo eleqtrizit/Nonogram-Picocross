@@ -87,7 +87,7 @@ function edit(l) {
 }
 
 function displayLevels() {
-	postData({}, "/list_levels.php", function(data) {
+	postData({}, "list_levels.php", function(data) {
 		let list = document.getElementById("list");
 		list.innerHTML = "";
 		for (let i = 0; i < data.length; i++) {
@@ -109,7 +109,7 @@ function loadLevel(id) {
 	let post = {
 		id: id
 	};
-	postData(post, "/get_level.php?", function(data) {
+	postData(post, "get_level.php?", function(data) {
 		gameBoard = JSON.parse(data[0].levelblob);
 		console.log(gameBoard);
 		createGameBoardHTML();
@@ -250,10 +250,10 @@ function saveToServer(id = "") {
 		length: gameBoard.length
 	};
 
-	let url = "/save_level.php"; // default
+	let url = "save_level.php"; // default
 
 	if (id.length > 0) {
-		url = "/resave_level.php";
+		url = "resave_level.php";
 		obj.id = id;
 	}
 

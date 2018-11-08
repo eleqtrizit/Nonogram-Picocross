@@ -90,7 +90,7 @@ function login(obj = user, callback = noop) {
 	}
 
 	if (typeof obj.username !== "undefined") {
-		postData(obj, "/login.php", function(data) {
+		postData(obj, "login.php", function(data) {
 			// we are not logged in. Destroy storage
 			if (data.isLoggedIn === "false" || data.isLoggedIn === false) {
 				console.log("User session has expired or password has changed.");
@@ -833,7 +833,7 @@ function loadLevels(gridType, callback) {
 	let post = {
 		gridType: gridType
 	};
-	postData(post, "/get_level_type.php?", function(data) {
+	postData(post, "get_level_type.php?", function(data) {
 		//console.log(data);
 		levelData = data;
 		callback();
