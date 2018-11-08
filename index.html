@@ -13,7 +13,7 @@
 
 <body>
 	<div id="audios" style="display:none">
-		<audio id="typing" controls style="display:none" preload="auto">
+		<audio id="typing" controls style="display:none" preload="none">
 			<source src="assets/typing.mp3" type="audio/mpeg">
 			<source src="assets/typing.wav" type="audio/mpeg">
 		</audio>
@@ -25,39 +25,39 @@
 			<source src="assets/sfx_menu_select4_short.mp3" type="audio/mpeg">
 			<source src="assets/sfx_menu_select4_short.wav" type="audio/mpeg">
 		</audio>
-		<audio id="rightSound" controls style="display:none" preload="auto">
+		<audio id="rightSound" controls style="display:none" preload="none">
 			<source src="assets/right.mp3" type="audio/mpeg">
 			<source src="assets/right.wav" type="audio/mpeg">
 		</audio>
-		<audio id="wrongSound" controls style="display:none" preload="auto">
+		<audio id="wrongSound" controls style="display:none" preload="none">
 			<source src="assets/wrong.mp3" type="audio/mpeg">
 			<source src="assets/wrong.wav" type="audio/mpeg">
 		</audio>
-		<audio id="levelWon" controls style="display:none" preload="auto">
+		<audio id="levelWon" controls style="display:none" preload="none">
 			<source src="assets/levelWon.mp3" type="audio/mpeg">
 			<source src="assets/levelWon.wav" type="audio/mpeg">
 		</audio>
-		<audio id="gameWon1" controls style="display:none" preload="auto">
+		<audio id="gameWon1" controls style="display:none" preload="none">
 			<source src="assets/RoundandRound.mp3" type="audio/mpeg">
 			<source src="assets/RoundandRound.wav" type="audio/mpeg">
 		</audio>
-		<audio id="gameWon2" controls style="display:none" preload="auto">
+		<audio id="gameWon2" controls style="display:none" preload="none">
 			<source src="assets/FantasticVoyage.mp3" type="audio/mpeg">
 			<source src="assets/FantasticVoyage.wav" type="audio/mpeg">
 		</audio>
-		<audio id="gameWonAll" controls style="display:none" preload="auto">
+		<audio id="gameWonAll" controls style="display:none" preload="none">
 			<source src="assets/RockTheCasbah.mp3" type="audio/mpeg">
 			<source src="assets/RockTheCasbah.wav" type="audio/mpeg">
 		</audio>
-		<audio id="levelLost" controls style="display:none" preload="auto">
+		<audio id="levelLost" controls style="display:none" preload="none">
 			<source src="assets/levelLost.mp3" type="audio/mpeg">
 			<source src="assets/levelLost.wav" type="audio/mpeg">
 		</audio>
-		<audio id="gameLost" controls style="display:none" preload="auto">
+		<audio id="gameLost" controls style="display:none" preload="none">
 			<source src="assets/LoseYourself.mp3" type="audio/mpeg">
 			<source src="assets/LoseYourself.wav" type="audio/mpeg">
 		</audio>
-		<audio id="makeUser" controls style="display:none" preload="auto">
+		<audio id="makeUser" controls style="display:none" preload="none">
 			<source src="assets/AnotherOneBitesTheDust.mp3" type="audio/mpeg">
 			<source src="assets/AnotherOneBitesTheDust.wav" type="audio/mpeg">
 		</audio>
@@ -272,6 +272,7 @@
 					<div id="board" role="grid"></div>
 					<div>
 						<span id="elementsOnGrid" class="trackers" role="log"></span>
+						<span id="suggest">Suggest: <a onclick="findBestMarkedSuggestion()">Good</a> | <a onclick="findBestUnmarkedSuggestion()">Bad</a></span>
 					</div>
 				</div>
 			</div>

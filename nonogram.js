@@ -128,10 +128,7 @@ function loginUser() {
 function getFileName() {
 	var fullPath = document.getElementById("fileToUpload").value;
 	if (fullPath) {
-		var startIndex =
-			fullPath.indexOf("\\") >= 0
-				? fullPath.lastIndexOf("\\")
-				: fullPath.lastIndexOf("/");
+		var startIndex = fullPath.indexOf("\\") >= 0 ? fullPath.lastIndexOf("\\") : fullPath.lastIndexOf("/");
 		var filename = fullPath.substring(startIndex);
 		if (filename.indexOf("\\") === 0 || filename.indexOf("/") === 0) {
 			filename = filename.substring(1);
@@ -149,6 +146,7 @@ function submitAvatar() {
 
 function beginLoading() {
 	loadStorage();
+	preloadMedia();
 	login({}, function() {
 		configureUserMenus();
 	});
@@ -299,15 +297,7 @@ function selectSex(sex) {
 
 function createUser() {
 	let problems = false;
-	let checkFields = [
-		"username",
-		"password",
-		"email",
-		"firstname",
-		"lastname",
-		"age",
-		"location"
-	];
+	let checkFields = ["username", "password", "email", "firstname", "lastname", "age", "location"];
 	let obj = {};
 
 	for (const field of checkFields) {
@@ -335,8 +325,7 @@ function createUser() {
 		postData(obj, "create_user.php", function(data) {
 			console.log(data);
 			if (data[0].username.length === 0) {
-				document.getElementById("incompleteForm").innerHTML =
-					"Username already taken.";
+				document.getElementById("incompleteForm").innerHTML = "Username already taken.";
 			} else {
 				// save user
 				user = data[0];
@@ -364,8 +353,7 @@ function leaveSettings() {
 }
 
 function elementsOnGrid() {
-	document.getElementById("elementsOnGrid").innerHTML =
-		"Elements on Grid: " + gameBoard.length * gameBoard.length;
+	document.getElementById("elementsOnGrid").innerHTML = "Elements: " + gameBoard.length * gameBoard.length;
 }
 
 var activeTimer;
@@ -403,8 +391,7 @@ function updateTurns() {
 }
 
 function updateErrors() {
-	document.getElementById("errors").innerHTML =
-		"Errors: " + ++errorCount + "/" + maxErrors;
+	document.getElementById("errors").innerHTML = "Errors: " + ++errorCount + "/" + maxErrors;
 }
 
 function activateVideoBG(gif) {
@@ -432,13 +419,7 @@ function activateVideoBGold(id) {
 
 // rotate the high scores at the main menu, just like an old arcade game would
 function rotateHighScoresWithMainMenu() {
-	let rotateSections = [
-		"menu",
-		"arcade7",
-		"timetrial7",
-		"arcade13",
-		"timetrial13"
-	];
+	let rotateSections = ["menu", "arcade7", "timetrial7", "arcade13", "timetrial13"];
 	let rotateIndex = 0;
 	// even though setInterval has its own timer, we don't want to accidently rotate away
 	// from the main menu if we just got back to it.  Let's make sure we rotate only after a
@@ -544,8 +525,7 @@ function activateSection(id, delayUntilChangover = 0, callback = noop) {
 	let changeOver = function() {
 		let c = main.children;
 		for (let i = 0; i < c.length; i++) {
-			if (c[i].id !== "")
-				document.getElementById(c[i].id).style.display = "none";
+			if (c[i].id !== "") document.getElementById(c[i].id).style.display = "none";
 		}
 		document.getElementById(id).style.display = "inline";
 		callback();
@@ -572,14 +552,12 @@ function pushSquare(i, j) {
 	if (pushMode === "marked") {
 		if (gameBoard.grid[x][y].isUsed) {
 			gameBoard.grid[x][y].isDisplayed = true;
-			document.getElementById(i + "|" + j).style =
-				flexBasisCache + successBlockColor;
+			document.getElementById(i + "|" + j).style = flexBasisCache + successBlockColor;
 			document.getElementById("rightSound").play();
 		} else {
 			updateErrors();
 			gameBoard.grid[x][y].isDisplayed = true;
-			document.getElementById(i + "|" + j).style =
-				flexBasisCache + errorBlockColor;
+			document.getElementById(i + "|" + j).style = flexBasisCache + errorBlockColor;
 			if (errorCount < maxErrors) {
 				document.getElementById("wrongSound").play();
 			}
@@ -911,16 +889,114 @@ function init() {
 // move suggestion
 //   why am I making this?  just a quick way to check boundaries
 function doesSquareExist(i, j) {
-	if (
-		typeof gameBoard[i] === "undefined" ||
-		typeof gameBoard[i][j] === "undefined"
-	) {
+	if (typeof gameBoard.grid[i] === "undefined" || typeof gameBoard.grid[i][j] === "undefined") {
 		return false;
 	}
 	return true;
 }
 
-function squareScore(i, j) {}
+// rate the value of a square for the purpose of suggestions
+function squareScore(i, j) {
+	if (doesSquareExist(i, j)) {
+		if (gameBoard.grid[i][j].isUsed) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+// create a score that is a count of all the surrounding squares being isUsed=true
+function getSuggestionScore(i, j) {
+	let total = squareScore(i - 1, j) + squareScore(i + 1, j);
+	total += squareScore(i, j - 1) + squareScore(i, j + 1);
+	total += squareScore(i - 1, j - 1) + squareScore(i + 1, j + 1);
+	total += squareScore(i - 1, j + 1) + squareScore(i + 1, j - 1);
+	return total;
+}
+
+// find the square with the highest total
+function bestSuggestion(isCenterSquareMarked) {
+	let bestSquare = {
+		i: 0,
+		j: 0,
+		score: 0 // default score for unmarked center square
+	};
+
+	// change the score if we need to find the lowest score
+	if (isCenterSquareMarked) {
+		bestSquare.score = 9;
+	}
+
+	for (let i = 0; i < gameBoard.grid.length; i++) {
+		for (let j = 0; j < gameBoard.grid.length; j++) {
+			let score = getSuggestionScore(i, j);
+
+			if (isCenterSquareMarked === gameBoard.grid[i][j].isUsed) {
+				if (score < bestSquare.score) {
+					bestSquare.i = i;
+					bestSquare.j = j;
+					bestSquare.score = score;
+				}
+			} else {
+				if (score > bestSquare.score) {
+					bestSquare.i = i;
+					bestSquare.j = j;
+					bestSquare.score = score;
+				}
+			}
+		}
+	}
+	return bestSquare;
+}
+
+function findBestMarkedSuggestion() {
+	let square = bestSuggestion(true);
+	animateSuggestion(square, successBlockColor);
+}
+
+function findBestUnmarkedSuggestion() {
+	let square = bestSuggestion(false);
+	animateSuggestion(square, errorBlockColor, function() {
+		errorCount--;
+	});
+}
+
+// start from the far side and animate
+function animateSuggestion(square, blockColor, callback = noop) {
+	document.getElementById("suggest").innerHTML = "";
+	let iterator = 5;
+	let val = 5;
+	let maxBounces = 5;
+	let anim = setInterval(function() {
+		if (val == 255 || val == 0) {
+			iterator = -iterator;
+			maxBounces--;
+		}
+		document.getElementById(square.i + "|" + square.j).style.backgroundColor = `rgb(${val}, ${val}, ${val})`;
+
+		val += iterator;
+		if (maxBounces === 0) {
+			pushSquare(square.i, square.j);
+			callback();
+			clearInterval(anim);
+		}
+	}, 1);
+}
+
+// only trigger this after "Game Start" has been touched
+// that way, the most important media will get preloaded first as part of the HTML
+function preloadMedia() {
+	document.getElementById("typing").preload = "true";
+	document.getElementById("rightSound").preload = "true";
+	document.getElementById("wrongSound").preload = "true";
+	document.getElementById("makeUser").preload = "true";
+	document.getElementById("levelWon").preload = "true";
+	document.getElementById("levelLost").preload = "true";
+	document.getElementById("gameLost").preload = "true";
+	document.getElementById("gameWon1").preload = "true";
+	document.getElementById("gameWon2").preload = "true";
+	document.getElementById("gameWonAll").preload = "true";
+}
 
 // error handling
 function errors(index) {
