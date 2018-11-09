@@ -349,6 +349,7 @@ function imageWorks(imgAddr, l) {
 	//img.src = "/assets/Mario.png";
 	//img.src = "https://vignette.wikia.nocookie.net/mario/images/3/32/8_Bit_Mario.png/revision/latest?cb=20120602231304";
 	//img.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Emacs_Tetris_vector_based_detail.svg/200px-Emacs_Tetris_vector_based_detail.svg.png";
+
 	img.src = imgAddr;
 
 	function getPixel(x, y) {

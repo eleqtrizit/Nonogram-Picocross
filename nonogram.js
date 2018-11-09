@@ -656,7 +656,7 @@ function isGameOver() {
 			rollCredits();
 			level = 0;
 		});
-		let score = Math.max(elementCount - errorCount, 0) / elementCount;
+		let score = parseInt((Math.max(elementCount - errorCount, 0) / elementCount) * 100, 10);
 		let duration = countDown - timerSeconds;
 		let obj = {
 			id: user.id,

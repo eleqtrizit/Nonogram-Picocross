@@ -31,6 +31,7 @@
     -   Where are they?
     -   Just don&#39;t touch anything after hitting &quot;start game&quot;, they will cycle automatically, just like an old arcade game.
     -   **I skipped the part where I change the order**. That didn&#39;t really make any sense for what I was going for, the style of an old arcade game. That is just a simple matter of running the array backwards in JS or doing a _select .. asc_ or _select .. desc_ in MySQL
+    -   **I changed the score formula** to parseInt((Math.max(elementCount - errorCount, 0) / elementCount) \* 100,10); I believe it displays better. That way the highest score is 100, not 1.
 -   **Trusting the Client**
     -   Because it was really outside of the scope of the project, I don&#39;t have much, if anything, in the way of preventing a savvy programmer from messing with their score, or other things.
     -   Things I could of done:
