@@ -53,7 +53,7 @@
             -   Count squares around it that are unmarked. This is the most unique marked square, so it&#39;s useful.
         -   Find an unmarked square
             -   Count squares around it that are marked. This is the most unique unmarked square, so it&#39;s also useful.
-    -   I made it just one suggestion per level
+    -   There are unlimited suggestions, since this is just a demo.
 -   **Colors / Themes**
     -   Instead of using a color picker, I choose to use themes.
         -   Why?
