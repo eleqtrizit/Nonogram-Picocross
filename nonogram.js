@@ -13,6 +13,9 @@ var level = 0;
 var levelData = {};
 var maxErrors = 5;
 var countDown = 1800;
+var elementCount = 0;
+var totalElementCount = 0;
+var totalErrorCount = 0;
 
 var noop = function() {}; // do nothing function to set as default callback
 
@@ -353,7 +356,16 @@ function leaveSettings() {
 }
 
 function elementsOnGrid() {
-	document.getElementById("elementsOnGrid").innerHTML = "Elements: " + gameBoard.length * gameBoard.length;
+	elementCount = 0;
+	for (let i = 0; i < gameBoard.grid.length; i++) {
+		for (let j = 0; j < gameBoard.grid.length; j++) {
+			if (gameBoard.grid[i][j].isUsed) {
+				elementCount++;
+				totalElementCount++;
+			}
+		}
+	}
+	document.getElementById("elementsOnGrid").innerHTML = "Elements: " + elementCount;
 }
 
 var activeTimer;
@@ -425,7 +437,7 @@ function rotateHighScoresWithMainMenu() {
 	// from the main menu if we just got back to it.  Let's make sure we rotate only after a
 	// certain amount of time
 	let rotateCounter = 0;
-	let rotateAt = 30;
+	let rotateAt = 7;
 
 	let rotator = setInterval(function() {
 		if (activeSection !== "menu" && activeSection !== "scoreboardPage") {
@@ -556,6 +568,7 @@ function pushSquare(i, j) {
 			document.getElementById("rightSound").play();
 		} else {
 			errorCount++;
+			totalErrorCount++;
 			updateErrors();
 			gameBoard.grid[x][y].isDisplayed = true;
 			document.getElementById(i + "|" + j).style = flexBasisCache + errorBlockColor;
@@ -610,7 +623,6 @@ function isGameOver() {
 	document.getElementById("youLost").style.display = "none";
 	document.getElementById("youWon").style.display = "none";
 
-	console.log(errorCount);
 	if (errorCount === maxErrors) {
 		doGameOver();
 
@@ -633,30 +645,32 @@ function isGameOver() {
 	// gamer won sequence
 	document.getElementById("youWon").style.display = "block";
 	level++; // next board
-	// all levels have been won!
+
 	document.body.className = "levelWon";
 	playSound("levelWon");
-
+	// all levels have been won!
 	if (level >= levelData.length) {
-		// $id,$errorCount,$score,$gridType,$gameType)
+		activateSection("rollCredits", 1000, function() {
+			activateVideoBG("gameWonAll.gif");
+			document.body.className = "";
+			rollCredits();
+			level = 0;
+		});
+		let score = Math.max(elementCount - errorCount, 0) / elementCount;
 		let duration = countDown - timerSeconds;
 		let obj = {
 			id: user.id,
 			errorCount: errorCount,
 			duration: duration,
 			gridType: levelData[0].gridType,
-			gameType: selectedGameType
+			gameType: selectedGameType,
+			score: score
 		};
 		console.log(obj);
 		postData(obj, "update_scoreboard.php", function(data) {
 			console.log("Update scoreboard? " + data.success);
-		});
-
-		activateSection("rollCredits", 1000, function() {
-			activateVideoBG("gameWonAll.gif");
-			document.body.className = "";
-			rollCredits();
-			level = 0;
+			totalErrorCount = 0; // reset after submit
+			totalElementCount = 0; // reset after submit
 		});
 	} else {
 		activateSection("gameOver", 1000, function() {
@@ -1040,14 +1054,12 @@ function findBestUnmarkedSuggestion() {
 
 // start from the far side and animate
 function animateSuggestion(square, blockColor, callback = noop) {
-	document.getElementById("suggest").innerHTML = "";
+	//document.getElementById("suggest").innerHTML = "";
 	let iterator = 6;
 	let val = 5;
 	let maxBounces = 7;
-	let countSeconds = 0;
 	playSound("suggestion");
 	let anim = setInterval(function() {
-		countSeconds++;
 		if (val >= 255 || val <= 0) {
 			if (val >= 255) val = 255;
 			if (val < 0) val = 0;
@@ -1061,7 +1073,6 @@ function animateSuggestion(square, blockColor, callback = noop) {
 
 		val += iterator;
 		if (maxBounces === 0) {
-			console.log(countSeconds);
 			stopSound("suggestion");
 			pushSquare(square.i + 1, square.j + 1);
 			callback();

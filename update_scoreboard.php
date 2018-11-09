@@ -7,7 +7,7 @@ $_POST = json_decode(file_get_contents('php://input'), true);
 $id = $_POST['id'];
 $duration = $_POST['duration'];
 $errorCount = $_POST['errorCount'];
-$score = 150 - ($errorCount*10);
+$score = $_POST['score'];
 $gridType = $_POST['gridType'];
 $gameType = $_POST['gameType'];
 
