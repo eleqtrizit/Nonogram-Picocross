@@ -13,6 +13,12 @@ Design Decisions
 		○  Exceptions
 			§ Avatar upload part is in separate files.
 			§ The level creator is in separate files.  But this is inconsequential, due to the fact that the general user will never get to touch the level creator.
+	• Game Modes
+		○ All modes only play 3 levels
+		○ Arcade
+			§ I only account for not hitting the error limits in arcade mode.  So I don't display the duration/time when that is completed.
+		○ Time Trial
+			§ If you beat all 3 levels in under 30 minutes, the time remaining will display.  This fullfils requirement "Part 1 #7"
 	• Level Creator
 		○ The level creator can be found at https://www.rivera-web.com/nonogram/level_creator.html
 		○ This is the only place where the random level creator can be used
