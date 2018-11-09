@@ -61,6 +61,10 @@
 			<source src="assets/AnotherOneBitesTheDust.mp3" type="audio/mpeg">
 			<source src="assets/AnotherOneBitesTheDust.wav" type="audio/mpeg">
 		</audio>
+		<audio id="suggestion" controls style="display:none" preload="none">
+			<source src="assets/Suggestion.mp3" type="audio/mpeg">
+			<source src="assets/Suggestion.wav" type="audio/mpeg">
+		</audio>
 	</div>
 	<!-- If you're wondering why
 			 there are apparently useless divs below, it's because they are necessary to the CSS I'm using to vertically align
@@ -69,17 +73,17 @@
 			 because it also has it's own display type of flex. -->
 
 	<div id="main">
-		<div id="welcomeScreenGo" style="display:none">
+		<section id="welcomeScreenGo" style="display:none">
 			<div class="centerlarge">
 				<div>
 					<div>NONOGRAM</div>
 					<div onclick="beginLoading()" id="startGame" role="navigation">Start Game</div>
 				</div>
 			</div>
-		</div>
+		</section>
 
 
-		<div id="menu" style="display:none">
+		<section id="menu" style="display:none">
 			<div class="centermedium">
 				<div>
 					<div>Choose:</div>
@@ -98,23 +102,24 @@
 
 				</div>
 			</div>
-		</div>
+		</section>
 
-		<div id="pickGrid">
+		<section id="pickGrid">
 			<div class="centermedium">
 				<div>
 					<div onclick="startGame(7)" id="startGame7" style="cursor: pointer;" role="navigation">
 						7x7
 					</div>
-					<div onclick="startGame(13)" id="startGame13" style="cursor: pointer;" role="navigation">
+					<div onclick="startGame(13)" id="startGame13" style="cursor: pointer;" role="navigation" class="no-small-screens">
 						13x3
 					</div>
+					<div id="back2Menu3" onclick="resetToMenu('back2Menu3')" role="navigation">Back to Menu</div>
 				</div>
 			</div>
-		</div>
+		</section>
 
 
-		<div id="userFunctions" style="display:none">
+		<section id="userFunctions" style="display:none">
 			<div class="centermedium">
 				<div>
 					<div onclick="selectLogin()" style="cursor: pointer; display:none" id="selectLogin" role="navigation">Login</div>
@@ -125,30 +130,33 @@
 					<div id="back2Menu" onclick="resetToMenu('back2Menu')" role="navigation">Back to Menu</div>
 				</div>
 			</div>
-		</div>
+		</section>
 
-		<div id="uploadAvatar" style="display: none">
+		<section id="uploadAvatar" style="display: none">
 			<div class="centermedium">
 				<div>
 					<form action="/upload.php" method="post" enctype="multipart/form-data" id="avatarForm">
 
 
 						<div class="upload-btn-wrapper">
-							<button class="btn" role="button">Upload a file</button>
+							<button class="btn" role="button">Select File</button><br><br><br>
 							<input type="hidden" id="uploadName" value="" name="uploadName">
 							<input type="file" name="fileToUpload" id="fileToUpload" role="dialog">
 							<input type="hidden" name="fileName" id="fileName" value="">
 						</div>
-						<div>
-							<input onclick="submitAvatar()" value="Upload Image" name="Submit" role="button">
+						<div class="upload-submit">
+							<span onclick="submitAvatar()" role="button">
+									Upload Image
+							</span>
 						</div>
+						<div id="back2Menu2" onclick="resetToMenu('back2Menu2')" role="navigation">Back to Menu</div>
 					</form>
 
 				</div>
 			</div>
-		</div>
+		</section>
 
-		<div id="uploadComplete" style="display: none">
+		<section id="uploadComplete" style="display: none">
 			<div class="centermedium">
 				<div>
 					<div id="uploadMsg" style="padding-bottom: 120px">
@@ -159,10 +167,10 @@
 				</div>
 
 			</div>
-		</div>
+		</section>
 
 
-		<div id="createUser">
+		<section id="createUser">
 			<div class="centersmall">
 				<div class="createUser">
 					<div>
@@ -198,27 +206,27 @@
 					<div id="back2Menu2" onclick="resetToMenu('back2Menu2')" role="navigation">Back to Menu</div>
 				</div>
 			</div>
-		</div>
+		</section>
 
-		<div id="userCreated" style="display:none">
+		<section id="userCreated" style="display:none">
 			<div class="centerlarge">
 				<div>
 					<div style="padding-bottom: 40px;" role="status">Account Created</div>
 					<div id="userCreatedContinue" onclick="userCreatedBackToMenu()" role="textbox">Continue</div>
 				</div>
 			</div>
-		</div>
+		</section>
 
-		<div id="userLoggedIn" style="display:none">
+		<section id="userLoggedIn" style="display:none">
 			<div class="centerlarge">
 				<div>
 					<div style="padding-bottom: 40px;" role="status">Login Complete</div>
 					<div id="userCreatedContinue2" onclick="userCreatedBackToMenu()" role="navigation">Continue</div>
 				</div>
 			</div>
-		</div>
+		</section>
 
-		<div id="loginPage" style="display:none">
+		<section id="loginPage" style="display:none">
 			<div class="centermedium">
 				<div>
 					<div>
@@ -233,9 +241,9 @@
 				</div>
 
 			</div>
-		</div>
+		</section>
 
-		<div id="helpPage" style="display:none;">
+		<section id="helpPage" style="display:none;">
 			<div class="centersmall">
 				<div role="text">
 					How to play:<br>
@@ -249,9 +257,9 @@
 					<div id="back2Menu3" onclick="resetToMenu('back2Menu3')" role="textbox">Back to Menu</div>
 				</div>
 			</div>
-		</div>
+		</section>
 
-		<div id="scoreboardPage" style="display:none;">
+		<section id="scoreboardPage" style="display:none;">
 			<div class="centermediumsmall">
 				<div role="text">
 					<div>High Scores</div>
@@ -259,9 +267,9 @@
 					<div id="scoreboard"></div>
 				</div>
 			</div>
-		</div>
+		</section>
 
-		<div id="play" style="display:none;">
+		<section id="play" style="display:none;">
 			<div class="centersmall">
 				<div>
 					<div id="gameStats">
@@ -277,9 +285,9 @@
 				</div>
 			</div>
 
-		</div>
+		</section>
 
-		<div id="gameOver" style="display: none">
+		<section id="gameOver" style="display: none">
 			<div class="centermedium">
 				<div>
 					<div id="youWon" style="display: none; margin-top: 20vh;" class="large">
@@ -293,20 +301,19 @@
 					<div id="stats"></div>
 				</div>
 			</div>
+		</section>
 
-		</div>
-
-		<div id="rollCredits" style="display: none">
-			<div class="centersmall">
+		<section id="rollCredits" style="display: none">
+			<div class="credits">
 				<div>
-					<div id="showCredits" style="font-size: 32px; line-height: 40px;" role="text">
+					<div id="showCredits" role="text">
 					</div>
 				</div>
 			</div>
-		</div>
+		</section>
 
 
-		<div id="settings" style="display:none;">
+		<section id="settings" style="display:none;">
 			<div class="centersmall">
 				<div>
 					<div id="gridoptions" style="padding-bottom: 80px" role="radiogroup">Change the grid outline color:<br>
@@ -338,8 +345,7 @@
 					</div>
 				</div>
 			</div>
-
-		</div>
+		</section>
 
 
 

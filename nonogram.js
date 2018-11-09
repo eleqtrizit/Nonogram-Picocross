@@ -580,6 +580,32 @@ function doGameOver() {
 	});
 }
 
+// use to hack the game for a win
+function forceWin() {
+	let l = gameBoard.grid[0].length;
+	for (let i = 0; i < l; i++) {
+		for (let j = 0; j < l; j++) {
+			if (gameBoard.grid[i][j].isUsed) {
+				gameBoard.grid[i][j].isDisplayed = true;
+			}
+		}
+	}
+	isGameOver();
+}
+
+function forceCredits() {
+	level = levelData.length;
+	forceWin();
+}
+
+function forceTimeout() {
+	if (selectedGameType !== "arcade") {
+		timerSeconds = 1;
+	} else {
+		console.log("Not in time trial mode");
+	}
+}
+
 function isGameOver() {
 	document.getElementById("youLost").style.display = "none";
 	document.getElementById("youWon").style.display = "none";
@@ -611,7 +637,7 @@ function isGameOver() {
 	document.body.className = "levelWon";
 	playSound("levelWon");
 
-	if (level === levelData.length) {
+	if (level >= levelData.length) {
 		// $id,$errorCount,$score,$gridType,$gameType)
 		let duration = countDown - timerSeconds;
 		let obj = {
@@ -646,47 +672,61 @@ function isGameOver() {
 function rollCredits() {
 	let credits = [
 		"Congrats!<br>You beat the game!",
-		"This has been an<br>Agustin Rivera<br>production",
+		"This has been an<br>Agustin Rivera<br>Production",
+		//"This has been an<br>Agustin Rivera<br>Production",
 		"Game Design:<br><br>A. Rivera",
 		"Graphic Design:<br><br>Agustin R.",
 		"Coding:<br><br>Augi Rivera",
 		"Lead Programmer:<br><br>A.J. Rivera",
 		"Costume Design:<br><br>A. Jesus Rivera",
+		"Chief Mayhem Officer:<br><br>Zaira",
+		"Edited By:<br><br>Visual Studio Code",
 		"Special<br>Thanks To:<br><br>Coffee",
+		"Special<br>Thanks To:<br><br>Creamer",
+		"Special<br>Thanks To:<br><br>Sugar",
 		"Background<br>Design:<br><br>Google Images",
 		"Special<br>Coding<br>Thanks To:<br><br>Stack Overflow<br><br>w3schools",
 		"Sound Effects:<br><br>BassGorilla.com<br><br>Woolyss.com<br><br>OpenGameArt.org",
-		"Music:<br><br>Disco Fever<br>Fortnite",
-		"Music:<br><br>Lose Yourself<br>Eminem",
-		"Music:<br><br>Another One Bites The Dust<br>Queen",
-		"Music:<br><br>Round and Round<br>Ratt",
-		"Music:<br><br>Fantastic Voyage<br>Lakeside",
-		"Music:<br><br>Rock the Casbah<br>The Clash",
-		"No freshmen were harmed in the making of this game"
+		"Music:<br><br>Disco Fever<br><br>Fortnite",
+		"Music:<br><br>Lose Yourself<br><br>Eminem",
+		"Music:<br><br>Another One Bites The Dust<br><br>Queen",
+		"Music:<br><br>Round and Round<br><br>Ratt",
+		"Music:<br><br>Fantastic Voyage<br><br>Lakeside",
+		"Music:<br><br>Rock the Casbah<br><br>The Clash",
+		"No freshmen were harmed in the making of this game.",
+		"No freshmen were harmed in the making of this game."
 	];
 	let i = 0;
 	document.getElementById("showCredits").innerHTML = credits[i++];
 
 	playSound("gameWonAll");
-	let interval = setInterval(function() {
+
+	// why is there an interval in the interval?
+	// the first interval is waiting for the first beat of the song Rock the Casbah
+	// the second interval is the tempo
+	let firstInterval = setInterval(function() {
 		document.getElementById("showCredits").innerHTML = credits[i++];
-		if (i === credits.length) {
-			document.getElementById("showCredits").innerHTML = "";
-			clearInterval(interval);
-			resetBoard();
-			let d = document.createElement("div");
-			d.innerHTML = "Thanks for playing.<br><br><br><br>Back to the menu";
-			d.onclick = function() {
-				level = 0;
-				activateVideoBG("openingVid.gif");
-				stopAllSound();
-				playSound("menuMusic");
-				login();
-				activateSection("menu");
-			};
-			document.getElementById("showCredits").appendChild(d);
-		}
-	}, 1860); // why 1860?? syncs to the music :D
+		let interval = setInterval(function() {
+			document.getElementById("showCredits").innerHTML = credits[i++];
+			if (i === credits.length + 1) {
+				document.getElementById("showCredits").innerHTML = "";
+				clearInterval(interval);
+				resetBoard();
+				let d = document.createElement("div");
+				d.innerHTML = "Thanks for playing.<br><br><br><br>Back to the menu";
+				d.onclick = function() {
+					level = 0;
+					activateVideoBG("openingVid.gif");
+					stopAllSound();
+					playSound("menuMusic");
+					login();
+					activateSection("menu");
+				};
+				document.getElementById("showCredits").appendChild(d);
+			}
+		}, 1852); // why 1852?? syncs to the music :D
+		clearInterval(firstInterval);
+	}, 2000); // why 2100?  It's when the first beat hits
 }
 
 // ---------------- settings
@@ -960,17 +1000,19 @@ function bestSuggestion(isCenterSquareMarked) {
 			}
 			let score = getSuggestionScore(i, j);
 
-			if (isCenterSquareMarked === gameBoard.grid[i][j].isUsed) {
+			if (isCenterSquareMarked === true && gameBoard.grid[i][j].isUsed === true) {
 				if (score < bestSquare.score) {
 					bestSquare.i = i;
 					bestSquare.j = j;
 					bestSquare.score = score;
 				}
-			} else {
+			} else if (isCenterSquareMarked === false && gameBoard.grid[i][j].isUsed === false) {
 				if (score > bestSquare.score) {
 					bestSquare.i = i;
 					bestSquare.j = j;
 					bestSquare.score = score;
+				} else {
+					// nada
 				}
 			}
 		}
@@ -994,11 +1036,17 @@ function findBestUnmarkedSuggestion() {
 // start from the far side and animate
 function animateSuggestion(square, blockColor, callback = noop) {
 	document.getElementById("suggest").innerHTML = "";
-	let iterator = 5;
+	let iterator = 6;
 	let val = 5;
-	let maxBounces = 5;
+	let maxBounces = 7;
+	let countSeconds = 0;
+	playSound("suggestion");
 	let anim = setInterval(function() {
-		if (val == 255 || val == 0) {
+		countSeconds++;
+		if (val >= 255 || val <= 0) {
+			if (val >= 255) val = 255;
+			if (val < 0) val = 0;
+
 			iterator = -iterator;
 			maxBounces--;
 		}
@@ -1008,6 +1056,8 @@ function animateSuggestion(square, blockColor, callback = noop) {
 
 		val += iterator;
 		if (maxBounces === 0) {
+			console.log(countSeconds);
+			stopSound("suggestion");
 			pushSquare(square.i + 1, square.j + 1);
 			callback();
 			clearInterval(anim);
@@ -1021,6 +1071,7 @@ function preloadMedia() {
 	document.getElementById("typing").preload = "true";
 	document.getElementById("rightSound").preload = "true";
 	document.getElementById("wrongSound").preload = "true";
+	document.getElementById("suggestion").preload = "true";
 	document.getElementById("makeUser").preload = "true";
 	document.getElementById("levelWon").preload = "true";
 	document.getElementById("levelLost").preload = "true";
@@ -1117,12 +1168,16 @@ function clack() {
 	playSound("typing");
 }
 
+var currentSound;
 function playSound(id) {
-	console.log(id);
-	document.getElementById(id).pause();
 	if (!document.getElementById(id)) return;
+	console.log(id);
+
+	document.getElementById(id).pause();
+
 	document.getElementById(id).currentTime = 0;
 	document.getElementById(id).play();
+	currentSound = document.getElementById(id);
 }
 
 function stopSound(id) {
