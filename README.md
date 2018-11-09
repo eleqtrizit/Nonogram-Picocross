@@ -11,7 +11,7 @@
             -   By doing document.getElementById(&quot;main&quot;).children in a loop, and then setting each element as _display: none_, I can hide every part of the game I don&#39;t want to display.
             -   I can then activate just the one child I want to display.
         -   This gives the illusion of **instant load times**
-    -   \*\* \*\* Exceptions
+    -   **Exceptions**
         -   Avatar upload part is in separate files.
         -   The level creator is in separate files. But this is inconsequential, due to the fact that the general user will never get to touch the level creator.
 -   **Game Modes**
