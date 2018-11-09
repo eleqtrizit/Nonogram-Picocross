@@ -7,7 +7,7 @@
         -   Let&#39;s me load the whole game at once.
     -   How?
         -   The main div is id=main. Every section under it is a &quot;page&quot;.
-        -   activateSection(); \&lt;-- hence the name
+        -   activateSection(); -- hence the name
             -   By doing document.getElementById(&quot;main&quot;).children in a loop, and then setting each element as _display: none_, I can hide every part of the game I don&#39;t want to display.
             -   I can then activate just the one child I want to display.
         -   This gives the illusion of **instant load times**
