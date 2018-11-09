@@ -44,7 +44,7 @@
 
     -   The user avatar is client-to-server, stored for reuse.
     -   The &#39;upload&#39; for the levels is pure javascript, because I&#39;ve never done it that way before and I wanted to learn how to use it.
-        -   Links to from sources is always volatile, but I still chose to do it, as an education exercise.
+        -   Links to outiside sources is always volatile, **as some servers block you from linking to their images**, but I still chose to do it, as an education exercise.
 
 -   **Suggestion tool**
     -   So here&#39;s the thing. I don&#39;t really care for the game, and I&#39;m not good at it. The examples of suggestions from other games online don&#39;t really tell me much, and often times their suggestion didn&#39;t really help me.
