@@ -671,9 +671,8 @@ function isGameOver() {
 
 function rollCredits() {
 	let credits = [
-		"Congrats!<br>You beat the game!",
 		"This has been an<br>Agustin Rivera<br>Production",
-		//"This has been an<br>Agustin Rivera<br>Production",
+		"This has been an<br>Agustin Rivera<br>Production",
 		"Game Design:<br><br>A. Rivera",
 		"Graphic Design:<br><br>Agustin R.",
 		"Coding:<br><br>Augi Rivera",
@@ -696,8 +695,13 @@ function rollCredits() {
 		"No freshmen were harmed in the making of this game.",
 		"No freshmen were harmed in the making of this game."
 	];
+	if (selectedGameType === "arcade") {
+		document.getElementById("showCredits").innerHTML = "Congrats!<br>You beat the game!";
+	} else {
+		document.getElementById("showCredits").innerHTML =
+			"Congrats!<br>You beat the game<br> with " + timerSeconds + " seconds left!";
+	}
 	let i = 0;
-	document.getElementById("showCredits").innerHTML = credits[i++];
 
 	playSound("gameWonAll");
 
@@ -706,6 +710,7 @@ function rollCredits() {
 	// the second interval is the tempo
 	let firstInterval = setInterval(function() {
 		document.getElementById("showCredits").innerHTML = credits[i++];
+
 		let interval = setInterval(function() {
 			document.getElementById("showCredits").innerHTML = credits[i++];
 			if (i === credits.length + 1) {
