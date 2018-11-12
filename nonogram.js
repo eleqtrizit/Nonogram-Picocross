@@ -1176,7 +1176,7 @@ function readParam(param) {
 }
 
 function clearParams() {
-	window.history.replaceState({}, document.title, "/");
+	window.history.replaceState({}, document.title, "./");
 }
 
 // ----------------- audio routines
