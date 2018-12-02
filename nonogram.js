@@ -599,7 +599,13 @@ function forceWin() {
 	for (let i = 0; i < l; i++) {
 		for (let j = 0; j < l; j++) {
 			if (gameBoard.grid[i][j].isUsed) {
+				//gameBoard.grid[i][j].isDisplayed = true;
+				//pushSquare(i, j);
 				gameBoard.grid[i][j].isDisplayed = true;
+				let x = i + 1;
+				let y = j + 1;
+				document.getElementById(x + "|" + y).style = flexBasisCache + successBlockColor;
+				document.getElementById("rightSound").play();
 			}
 		}
 	}
