@@ -265,6 +265,8 @@
 					<div>High Scores</div>
 					<div id="scoreType"></div>
 					<div id="scoreboard"></div>
+					<div id="reverseScores" style="cursor: pointer">Reverse Scores</div>
+					<div id="score2menu" style="cursor: pointer" onclick="activateSection('menu')">Menu</div>
 				</div>
 			</div>
 		</section>
@@ -293,6 +295,7 @@
 				<div>
 					<div id="youWon" style="display: none; margin-top: 20vh;" class="large">
 						<div style="margin-bottom: 50px;" role="alert">You Won!</div>
+						<div style="margin-bottom: 50px;" role="how long" id="howLong"></div>
 						<div id="nextLevel" style="cursor: pointer" onclick="nextLevel()" role="navigation">Go to next level</div>
 					</div>
 					<div id="youLost" style="display: none" class="youWonOrLost">

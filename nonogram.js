@@ -13,9 +13,12 @@ var level = 0;
 var levelData = {};
 var maxErrors = 5;
 var countDown = 1800;
+var arcadeTotalTime = 0;
 var elementCount = 0;
 var totalElementCount = 0;
 var totalErrorCount = 0;
+var foundElements = 0;
+var reverseScoreList = false;
 
 var noop = function() {}; // do nothing function to set as default callback
 
@@ -131,7 +134,10 @@ function loginUser() {
 function getFileName() {
 	var fullPath = document.getElementById("fileToUpload").value;
 	if (fullPath) {
-		var startIndex = fullPath.indexOf("\\") >= 0 ? fullPath.lastIndexOf("\\") : fullPath.lastIndexOf("/");
+		var startIndex =
+			fullPath.indexOf("\\") >= 0
+				? fullPath.lastIndexOf("\\")
+				: fullPath.lastIndexOf("/");
 		var filename = fullPath.substring(startIndex);
 		if (filename.indexOf("\\") === 0 || filename.indexOf("/") === 0) {
 			filename = filename.substring(1);
@@ -300,7 +306,15 @@ function selectSex(sex) {
 
 function createUser() {
 	let problems = false;
-	let checkFields = ["username", "password", "email", "firstname", "lastname", "age", "location"];
+	let checkFields = [
+		"username",
+		"password",
+		"email",
+		"firstname",
+		"lastname",
+		"age",
+		"location"
+	];
 	let obj = {};
 
 	for (const field of checkFields) {
@@ -328,7 +342,8 @@ function createUser() {
 		postData(obj, "create_user.php", function(data) {
 			console.log(data);
 			if (data[0].username.length === 0) {
-				document.getElementById("incompleteForm").innerHTML = "Username already taken.";
+				document.getElementById("incompleteForm").innerHTML =
+					"Username already taken.";
 			} else {
 				// save user
 				user = data[0];
@@ -359,13 +374,14 @@ function elementsOnGrid() {
 	elementCount = 0;
 	for (let i = 0; i < gameBoard.grid.length; i++) {
 		for (let j = 0; j < gameBoard.grid.length; j++) {
+			totalElementCount++;
 			if (gameBoard.grid[i][j].isUsed) {
 				elementCount++;
-				totalElementCount++;
 			}
 		}
 	}
-	document.getElementById("elementsOnGrid").innerHTML = "Elements: " + elementCount;
+	document.getElementById("elementsOnGrid").innerHTML =
+		"Elem: " + foundElements + "|" + elementCount + "|" + totalElementCount;
 }
 
 var activeTimer;
@@ -388,7 +404,7 @@ function startCountdown() {
 	activeTimer = setInterval(function() {
 		timerSeconds--;
 		document.getElementById("timer").innerHTML = "Timer: " + timerSeconds;
-		if (timerSeconds == 0) {
+		if (timerSeconds === 0) {
 			doGameOver();
 		}
 	}, 1000);
@@ -403,7 +419,8 @@ function updateTurns() {
 }
 
 function updateErrors() {
-	document.getElementById("errors").innerHTML = "Errors: " + errorCount + "/" + maxErrors;
+	document.getElementById("errors").innerHTML =
+		"Errors: " + errorCount + "/" + maxErrors;
 }
 
 function activateVideoBG(gif) {
@@ -431,13 +448,19 @@ function activateVideoBGold(id) {
 
 // rotate the high scores at the main menu, just like an old arcade game would
 function rotateHighScoresWithMainMenu() {
-	let rotateSections = ["menu", "arcade7", "timetrial7", "arcade13", "timetrial13"];
+	let rotateSections = [
+		"menu",
+		"arcade7",
+		"timetrial7",
+		"arcade13",
+		"timetrial13"
+	];
 	let rotateIndex = 0;
 	// even though setInterval has its own timer, we don't want to accidently rotate away
 	// from the main menu if we just got back to it.  Let's make sure we rotate only after a
 	// certain amount of time
 	let rotateCounter = 0;
-	let rotateAt = 7;
+	let rotateAt = 2; // rotate after x seconds here
 
 	let rotator = setInterval(function() {
 		if (activeSection !== "menu" && activeSection !== "scoreboardPage") {
@@ -468,6 +491,90 @@ function rotateHighScoresWithMainMenu() {
 	}, 1000);
 }
 
+function updateHighScores(data, gridType, gameType) {
+	document.getElementById("reverseScores").onclick = function() {
+		reverseScoreList = !reverseScoreList;
+		updateHighScores(data, gridType, gameType);
+	};
+
+	if (reverseScoreList) {
+		data = data.reverse();
+	}
+
+	let scoreboard = document.getElementById("scoreboard");
+	scoreboard.innerHTML = "";
+	let scoretype = document.getElementById("scoreType");
+	scoretype.innerHTML = "";
+
+	if (gameType === "arcade") {
+		scoretype.innerHTML = "Arcade ";
+	} else {
+		scoretype.innerHTML = "Time Trial ";
+	}
+	scoretype.innerHTML += gridType + "x" + gridType;
+
+	let table = document.createElement("div");
+	table.style = "display:table; width:100%";
+
+	let tr = document.createElement("div");
+	tr.style = "display:table-row; width: 100%; ";
+	table.appendChild(tr);
+	let usercell = document.createElement("div");
+	usercell.style = "display:table-cell;width: 55%;";
+	usercell.innerHTML = "Player";
+	table.appendChild(usercell);
+
+	if (data[0].gameType !== "timetrial") {
+		let score = document.createElement("div");
+		score.style = "display:table-cell;width: 22%;";
+		score.innerHTML = "Score";
+		table.appendChild(score);
+	}
+
+	let time = document.createElement("div");
+	time.style = "display:table-cell;width: 23%;";
+	time.innerHTML = "Time";
+	table.appendChild(time);
+
+	if (gameType === "arcade") {
+		for (let i = 0; i < data.length; i++) {
+			let tr = document.createElement("div");
+			tr.style = "display:table-row; width: 100%; ";
+			let usercell = document.createElement("div");
+			usercell.style = "display:table-cell;width: 55%;";
+			usercell.innerHTML = data[i].username;
+			let score = document.createElement("div");
+			score.style = "display:table-cell;width: 22%;";
+			score.innerHTML = data[i].score;
+
+			let time = document.createElement("div");
+			time.style = "display:table-cell;width: 23%;";
+			time.innerHTML = data[i].duration;
+
+			table.appendChild(tr);
+			table.appendChild(usercell);
+			table.appendChild(score);
+			table.appendChild(time);
+		}
+	} else if (gameType === "timetrial") {
+		for (let i = 0; i < data.length; i++) {
+			let tr = document.createElement("div");
+			tr.style = "display:table-row; width: 100%; ";
+			let usercell = document.createElement("div");
+			usercell.style = "display:table-cell;width: 65%;";
+			usercell.innerHTML = data[i].username;
+			let score = document.createElement("div");
+			score.style = "display:table-cell;width: 35%;";
+			score.innerHTML = data[i].duration;
+			table.appendChild(tr);
+			table.appendChild(usercell);
+			table.appendChild(score);
+		}
+	}
+	scoreboard.appendChild(table);
+	activateSection("scoreboardPage");
+}
+
 function showHighScores(gridType, gameType) {
 	// username,duration,errorcount,score,gameType
 	let obj = {
@@ -476,56 +583,7 @@ function showHighScores(gridType, gameType) {
 	};
 
 	postData(obj, "get_scoreboard.php", function(data) {
-		let scoreboard = document.getElementById("scoreboard");
-		scoreboard.innerHTML = "";
-		let scoretype = document.getElementById("scoreType");
-		scoretype.innerHTML = "";
-
-		if (gameType === "arcade") {
-			scoretype.innerHTML = "Arcade ";
-		} else {
-			scoretype.innerHTML = "Time Trial ";
-		}
-		scoretype.innerHTML += gridType + "x" + gridType;
-
-		let table = document.createElement("div");
-		table.style = "display:table; width:100%";
-		table.onclick = function() {
-			activateSection("menu");
-		};
-
-		console.log(data);
-		if (gameType === "arcade") {
-			for (let i = 0; i < data.length; i++) {
-				let tr = document.createElement("div");
-				tr.style = "display:table-row; width: 100%; ";
-				let usercell = document.createElement("div");
-				usercell.style = "display:table-cell;width: 65%;";
-				usercell.innerHTML = data[i].username;
-				let score = document.createElement("div");
-				score.style = "display:table-cell;width: 35%;";
-				score.innerHTML = data[i].score;
-				table.appendChild(tr);
-				table.appendChild(usercell);
-				table.appendChild(score);
-			}
-		} else if (gameType === "timetrial") {
-			for (let i = 0; i < data.length; i++) {
-				let tr = document.createElement("div");
-				tr.style = "display:table-row; width: 100%; ";
-				let usercell = document.createElement("div");
-				usercell.style = "display:table-cell;width: 65%;";
-				usercell.innerHTML = data[i].username;
-				let score = document.createElement("div");
-				score.style = "display:table-cell;width: 35%;";
-				score.innerHTML = data[i].duration;
-				table.appendChild(tr);
-				table.appendChild(usercell);
-				table.appendChild(score);
-			}
-		}
-		scoreboard.appendChild(table);
-		activateSection("scoreboardPage");
+		updateHighScores(data, gridType, gameType);
 	});
 }
 
@@ -537,7 +595,8 @@ function activateSection(id, delayUntilChangover = 0, callback = noop) {
 	let changeOver = function() {
 		let c = main.children;
 		for (let i = 0; i < c.length; i++) {
-			if (c[i].id !== "") document.getElementById(c[i].id).style.display = "none";
+			if (c[i].id !== "")
+				document.getElementById(c[i].id).style.display = "none";
 		}
 		document.getElementById(id).style.display = "inline";
 		callback();
@@ -563,15 +622,20 @@ function pushSquare(i, j) {
 	updateTurns();
 	if (pushMode === "marked") {
 		if (gameBoard.grid[x][y].isUsed) {
+			foundElements++;
+			document.getElementById("elementsOnGrid").innerHTML =
+				"Elem: " + foundElements + "|" + elementCount + "|" + totalElementCount;
 			gameBoard.grid[x][y].isDisplayed = true;
-			document.getElementById(i + "|" + j).style = flexBasisCache + successBlockColor;
+			document.getElementById(i + "|" + j).style =
+				flexBasisCache + successBlockColor;
 			document.getElementById("rightSound").play();
 		} else {
 			errorCount++;
 			totalErrorCount++;
 			updateErrors();
 			gameBoard.grid[x][y].isDisplayed = true;
-			document.getElementById(i + "|" + j).style = flexBasisCache + errorBlockColor;
+			document.getElementById(i + "|" + j).style =
+				flexBasisCache + errorBlockColor;
 			if (errorCount < maxErrors) {
 				document.getElementById("wrongSound").play();
 			}
@@ -604,7 +668,8 @@ function forceWin() {
 				gameBoard.grid[i][j].isDisplayed = true;
 				let x = i + 1;
 				let y = j + 1;
-				document.getElementById(x + "|" + y).style = flexBasisCache + successBlockColor;
+				document.getElementById(x + "|" + y).style =
+					flexBasisCache + successBlockColor;
 				document.getElementById("rightSound").play();
 			}
 		}
@@ -631,7 +696,7 @@ function isGameOver() {
 
 	if (errorCount === maxErrors) {
 		doGameOver();
-
+		foundElements = 0;
 		return true;
 	}
 
@@ -650,6 +715,14 @@ function isGameOver() {
 
 	// gamer won sequence
 	document.getElementById("youWon").style.display = "block";
+
+	if (selectedGameType === "arcade") {
+		document.getElementById("howLong").innerHTML = "Time: " + timerSeconds;
+	} else {
+		document.getElementById("howLong").innerHTML =
+			"Time so far: " + timerSeconds;
+	}
+
 	level++; // next board
 
 	document.body.className = "levelWon";
@@ -662,7 +735,10 @@ function isGameOver() {
 			rollCredits();
 			level = 0;
 		});
-		let score = parseInt((Math.max(elementCount - errorCount, 0) / elementCount) * 100, 10);
+		let score = parseInt(
+			(Math.max(elementCount - errorCount, 0) / elementCount) * 100,
+			10
+		);
 		let duration = countDown - timerSeconds;
 		let obj = {
 			id: user.id,
@@ -685,7 +761,7 @@ function isGameOver() {
 			document.body.className = "";
 		});
 	}
-
+	foundElements = 0;
 	return true;
 }
 
@@ -716,10 +792,13 @@ function rollCredits() {
 		"No freshmen were harmed in the making of this game."
 	];
 	if (selectedGameType === "arcade") {
-		document.getElementById("showCredits").innerHTML = "Congrats!<br>You beat the game!";
+		document.getElementById("showCredits").innerHTML =
+			"Congrats!<br>You beat the game!";
 	} else {
 		document.getElementById("showCredits").innerHTML =
-			"Congrats!<br>You beat the game<br> with " + timerSeconds + " seconds left!";
+			"Congrats!<br>You beat the game<br> with " +
+			timerSeconds +
+			" seconds left!";
 	}
 	let i = 0;
 
@@ -979,7 +1058,10 @@ function init() {
 // move suggestion
 //   why am I making this?  just a quick way to check boundaries
 function doesSquareExist(i, j) {
-	if (typeof gameBoard.grid[i] === "undefined" || typeof gameBoard.grid[i][j] === "undefined") {
+	if (
+		typeof gameBoard.grid[i] === "undefined" ||
+		typeof gameBoard.grid[i][j] === "undefined"
+	) {
 		return false;
 	}
 	return true;
@@ -1025,13 +1107,19 @@ function bestSuggestion(isCenterSquareMarked) {
 			}
 			let score = getSuggestionScore(i, j);
 
-			if (isCenterSquareMarked === true && gameBoard.grid[i][j].isUsed === true) {
+			if (
+				isCenterSquareMarked === true &&
+				gameBoard.grid[i][j].isUsed === true
+			) {
 				if (score < bestSquare.score) {
 					bestSquare.i = i;
 					bestSquare.j = j;
 					bestSquare.score = score;
 				}
-			} else if (isCenterSquareMarked === false && gameBoard.grid[i][j].isUsed === false) {
+			} else if (
+				isCenterSquareMarked === false &&
+				gameBoard.grid[i][j].isUsed === false
+			) {
 				if (score > bestSquare.score) {
 					bestSquare.i = i;
 					bestSquare.j = j;
@@ -1075,7 +1163,9 @@ function animateSuggestion(square, blockColor, callback = noop) {
 		}
 		let i = square.i + 1;
 		let j = square.j + 1;
-		document.getElementById(i + "|" + j).style.backgroundColor = `rgb(${val}, ${val}, ${val})`;
+		document.getElementById(
+			i + "|" + j
+		).style.backgroundColor = `rgb(${val}, ${val}, ${val})`;
 
 		val += iterator;
 		if (maxBounces === 0) {
