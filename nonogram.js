@@ -80,7 +80,6 @@ function configureUserMenus() {
 		let i = document.createElement("img");
 		i.src = user.avatarpath;
 		i.width = "200";
-		i.alt = "Account";
 		document.getElementById("avatarImage").appendChild(i);
 		document.getElementById("noAvatar").style.display = "none";
 		document.getElementById("avatarImage").style.display = "block";
