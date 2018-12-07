@@ -51,7 +51,7 @@ echo "Database created and imported successfully.";
 function run_sql_file($location, $mysqli)
 {
     //load file
-    $commands = file_get_contents($location);
+    $commands = file_get_contents($location); 
 
     //delete comments
     $lines = explode("\n", $commands);
