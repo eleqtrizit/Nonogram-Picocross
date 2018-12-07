@@ -14,12 +14,11 @@
 <body>
 	
 <?php
-
 require_once 'phplibs/db.php';
 $db = new db('none');
 
 $credentials = $db->GetCredentials();
-$mysqli = new mysqli($credentials["host"], $credentials["user"], $credentials["password"], $db);
+$mysqli = new mysqli($credentials["host"], $credentials["user"], $credentials["password"], $credentials["database"]);
 if ($mysqli->query("select * from levels")==false) {
 ?>
 <div>
@@ -27,7 +26,7 @@ if ($mysqli->query("select * from levels")==false) {
 	There was a problem connecting to the database.<br>
 	<br>
 	Please check the credentials in phplibs/db.php or <br><br>
-	<a href="install.php" style="color: red">install the game</a>
+	<a href="install.php" style="color: red">INSTALL THE GAME</a>
 </div>
 <?php
 }
