@@ -38,7 +38,7 @@ CREATE TABLE `games` (
 
 LOCK TABLES `games` WRITE;
 /*!40000 ALTER TABLE `games` DISABLE KEYS */;
-INSERT INTO `games` VALUES (0,1797,0,100,7,'arcade'),(0,1799,0,100,13,'arcade'),(0,11,0,100,7,'timetrial'),(0,7,0,100,13,'timetrial'),(2,1799,0,100,7,'arcade'),(2,1798,0,100,7,'arcade'),(2,1752,4,81,7,'arcade'),(2,1798,0,100,7,'arcade'),(0,1799,0,100,7,'arcade');
+INSERT INTO `games` VALUES (0,211,0,100,7,'timetrial'),(0,7,0,100,13,'timetrial'),(0,1795,4,81,7,'arcade'),(0,1796,1,95,7,'arcade'),(0,1794,4,95,13,'arcade'),(0,1797,3,96,13,'arcade'),(0,432,0,100,13,'timetrial'),(0,1305,0,100,7,'timetrial'),(0,1655,0,100,7,'timetrial'),(0,535,0,100,13,'timetrial'),(0,512,0,100,7,'timetrial');
 /*!40000 ALTER TABLE `games` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -96,7 +96,7 @@ CREATE TABLE `players` (
 
 LOCK TABLES `players` WRITE;
 /*!40000 ALTER TABLE `players` DISABLE KEYS */;
-INSERT INTO `players` VALUES (0,'eleqtriq','$2y$10$EXmAI6X0/9Zv1HvwbgB0eub6Ieuv9KFoh63KVonebF.y74IaHZb9.','asd','asd','asd',1,'male','asd','Agustin8bit.png'),(1,'Hubert','$2y$10$EHXqM/saZg1kY.hVF8iwFuOh9S5oD12IqqBmGBVTDWhh/voNU2NGm','hcecotti@csufresno.edu','Hubert','Cecotti',38,'male','Clovis',''),(2,'zaira','$2y$10$KGsfMRRqNtRy4d7Pm3V11Ox1eaXp3jsrs6.58cu4Z0pLjN97jkzWy','zairariv@mail.fresnostate.edu','Zaira','Rivera',24,'other','Ceres','');
+INSERT INTO `players` VALUES (0,'eleqtriq','$2y$10$EXmAI6X0/9Zv1HvwbgB0eub6Ieuv9KFoh63KVonebF.y74IaHZb9.','asd','asd','asd',1,'male','asd','avatars/20181207 105639john mcaffee art  Google Search.png'),(1,'Hubert','$2y$10$EHXqM/saZg1kY.hVF8iwFuOh9S5oD12IqqBmGBVTDWhh/voNU2NGm','hcecotti@csufresno.edu','Hubert','Cecotti',38,'male','Clovis',''),(2,'zaira','$2y$10$KGsfMRRqNtRy4d7Pm3V11Ox1eaXp3jsrs6.58cu4Z0pLjN97jkzWy','zairariv@mail.fresnostate.edu','Zaira','Rivera',24,'other','Ceres','');
 /*!40000 ALTER TABLE `players` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -109,4 +109,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-12-07  1:53:15
+-- Dump completed on 2018-12-07 19:37:29

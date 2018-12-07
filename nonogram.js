@@ -78,8 +78,9 @@ function configureUserMenus() {
 	) {
 		document.getElementById("avatarImage").innerHTML = "";
 		let i = document.createElement("img");
-		i.src = "avatars/" + user.avatarpath;
+		i.src = user.avatarpath;
 		i.width = "200";
+		i.alt = "Account";
 		document.getElementById("avatarImage").appendChild(i);
 		document.getElementById("noAvatar").style.display = "none";
 		document.getElementById("avatarImage").style.display = "block";
