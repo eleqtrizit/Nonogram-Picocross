@@ -442,7 +442,7 @@ function rotateHighScoresWithMainMenu() {
 	// from the main menu if we just got back to it.  Let's make sure we rotate only after a
 	// certain amount of time
 	let rotateCounter = 0;
-	let rotateAt = 2; // rotate after x seconds here
+	let rotateAt = 5; // rotate after x seconds here
 
 	let rotator = setInterval(function() {
 		if (activeSection !== "menu" && activeSection !== "scoreboardPage") {
