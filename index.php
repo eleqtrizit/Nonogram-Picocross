@@ -25,7 +25,7 @@ if ($mysqli->query("select * from levels")==false) {
 	<br><br><br>
 	There was a problem connecting to the database.<br>
 	<br>
-	Please check the credentials in phplibs/db.php or <br><br>
+	<b>Please check the credentials in <i>phplibs/db.php</i></b> or <br><br>
 	<a href="install.php" style="color: red">INSTALL THE GAME</a>
 </div>
 <?php
