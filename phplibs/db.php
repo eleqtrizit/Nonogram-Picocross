@@ -73,6 +73,8 @@ class db
         return json_encode($output);
     }
 
+
+
     public function Insert($sql) {
     	 global $conn;
 	    if ($conn->query($sql) === FALSE) {

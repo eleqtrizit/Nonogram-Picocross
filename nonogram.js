@@ -524,19 +524,12 @@ function updateHighScores(data, gridType, gameType) {
 	usercell.innerHTML = "Player";
 	table.appendChild(usercell);
 
-	if (data[0].gameType !== "timetrial") {
+	if (gameType === "arcade") {
 		let score = document.createElement("div");
-		score.style = "display:table-cell;width: 22%;";
+		score.style = "display:table-cell;width: 45%;";
 		score.innerHTML = "Score";
 		table.appendChild(score);
-	}
 
-	let time = document.createElement("div");
-	time.style = "display:table-cell;width: 23%;";
-	time.innerHTML = "Time";
-	table.appendChild(time);
-
-	if (gameType === "arcade") {
 		for (let i = 0; i < data.length; i++) {
 			let tr = document.createElement("div");
 			tr.style = "display:table-row; width: 100%; ";
@@ -544,27 +537,27 @@ function updateHighScores(data, gridType, gameType) {
 			usercell.style = "display:table-cell;width: 55%;";
 			usercell.innerHTML = data[i].username;
 			let score = document.createElement("div");
-			score.style = "display:table-cell;width: 22%;";
+			score.style = "display:table-cell;width: 45%;";
 			score.innerHTML = data[i].score;
-
-			let time = document.createElement("div");
-			time.style = "display:table-cell;width: 23%;";
-			time.innerHTML = data[i].duration;
 
 			table.appendChild(tr);
 			table.appendChild(usercell);
 			table.appendChild(score);
-			table.appendChild(time);
 		}
 	} else if (gameType === "timetrial") {
+		let time = document.createElement("div");
+		time.style = "display:table-cell;width: 245%;";
+		time.innerHTML = "Time";
+		table.appendChild(time);
+
 		for (let i = 0; i < data.length; i++) {
 			let tr = document.createElement("div");
 			tr.style = "display:table-row; width: 100%; ";
 			let usercell = document.createElement("div");
-			usercell.style = "display:table-cell;width: 65%;";
+			usercell.style = "display:table-cell;width: 55%;";
 			usercell.innerHTML = data[i].username;
 			let score = document.createElement("div");
-			score.style = "display:table-cell;width: 35%;";
+			score.style = "display:table-cell;width: 45%;";
 			score.innerHTML = data[i].duration;
 			table.appendChild(tr);
 			table.appendChild(usercell);
