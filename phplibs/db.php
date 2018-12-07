@@ -26,6 +26,9 @@ class db
      */
     public function __construct($_returnType)
     {
+		if ($_returnType=='none'){
+			return;
+		}
         // Create connection
         $connect = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_DB);
 
@@ -92,7 +95,11 @@ class db
         } else {
             //echo json_encode(array('success' => 'true'));
         }
-    }
+	}
+	
+	public function GetCredentials(){
+		return (array("host"=>DB_HOST, "user"=>DB_USER, "password"=>DB_PASSWORD, "database"=>DB_DB));
+	}
 }
 
 class NONOData

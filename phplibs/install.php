@@ -1,11 +1,3 @@
-<?php
-
-require_once 'phplibs/db.php';
-$db = new db();
-
-$credentials = $db->GetCredentials();
-?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,18 +8,29 @@ $credentials = $db->GetCredentials();
 
 <?php
 
+echo "Attempting to connect to database.<br>";
+echo "If there are errors below, please check the db.php file and set your credentials with a text editor.<br>";
+
+
+require_once 'phplibs/db.php';
+$db = new db('none');
+
+$credentials = $db->GetCredentials();
+$sqldump = "nonogram.sql";
+
 // Connect to MySQL
-$mysqli = new mysqli(credentials["host"], credentials["user"], credentials["password"]);
+$mysqli = new mysqli($credentials["host"], $credentials["user"], $credentials["password"]);
 // Check connection
 if ($mysqli->connect_error) {
     echo "Please alter/check the credentials in the file phplibs/db.php.";
     die("Connection failed: " . $mysqli->connect_error);
 }
-echo "Connected successfully";
 
+echo "No errors!<br>";
 // Create database
-if ($mysqli->query("create database $db") === true) {
-    echo "Database $db successfully.";
+$db = $credentials["database"];
+if ($mysqli->query("create database $db")) {
+    echo "Database $db successfully created.";
 } else {
     die("Error creating database: " . $mysqli->error);
 }
@@ -35,7 +38,7 @@ if ($mysqli->query("create database $db") === true) {
 echo "<br><br>";
 echo "Connecting to new db $db.";
 $mysqli->close();
-$mysqli = new mysqli(credentials["host"], credentials["user"], credentials["password"], credentials["db"]);
+$mysqli = new mysqli($credentials["host"], $credentials["user"], $credentials["password"], $db);
 if ($mysqli->connect_error) {
     die("Connection failed: " . $mysqli->connect_error);
 }
