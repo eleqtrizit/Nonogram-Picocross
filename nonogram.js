@@ -134,10 +134,7 @@ function loginUser() {
 function getFileName() {
 	var fullPath = document.getElementById("fileToUpload").value;
 	if (fullPath) {
-		var startIndex =
-			fullPath.indexOf("\\") >= 0
-				? fullPath.lastIndexOf("\\")
-				: fullPath.lastIndexOf("/");
+		var startIndex = fullPath.indexOf("\\") >= 0 ? fullPath.lastIndexOf("\\") : fullPath.lastIndexOf("/");
 		var filename = fullPath.substring(startIndex);
 		if (filename.indexOf("\\") === 0 || filename.indexOf("/") === 0) {
 			filename = filename.substring(1);
@@ -306,15 +303,7 @@ function selectSex(sex) {
 
 function createUser() {
 	let problems = false;
-	let checkFields = [
-		"username",
-		"password",
-		"email",
-		"firstname",
-		"lastname",
-		"age",
-		"location"
-	];
+	let checkFields = ["username", "password", "email", "firstname", "lastname", "age", "location"];
 	let obj = {};
 
 	for (const field of checkFields) {
@@ -342,8 +331,7 @@ function createUser() {
 		postData(obj, "create_user.php", function(data) {
 			console.log(data);
 			if (data[0].username.length === 0) {
-				document.getElementById("incompleteForm").innerHTML =
-					"Username already taken.";
+				document.getElementById("incompleteForm").innerHTML = "Username already taken.";
 			} else {
 				// save user
 				user = data[0];
@@ -419,8 +407,7 @@ function updateTurns() {
 }
 
 function updateErrors() {
-	document.getElementById("errors").innerHTML =
-		"Errors: " + errorCount + "/" + maxErrors;
+	document.getElementById("errors").innerHTML = "Errors: " + errorCount + "/" + maxErrors;
 }
 
 function activateVideoBG(gif) {
@@ -448,13 +435,7 @@ function activateVideoBGold(id) {
 
 // rotate the high scores at the main menu, just like an old arcade game would
 function rotateHighScoresWithMainMenu() {
-	let rotateSections = [
-		"menu",
-		"arcade7",
-		"timetrial7",
-		"arcade13",
-		"timetrial13"
-	];
+	let rotateSections = ["menu", "arcade7", "timetrial7", "arcade13", "timetrial13"];
 	let rotateIndex = 0;
 	// even though setInterval has its own timer, we don't want to accidently rotate away
 	// from the main menu if we just got back to it.  Let's make sure we rotate only after a
@@ -588,8 +569,7 @@ function activateSection(id, delayUntilChangover = 0, callback = noop) {
 	let changeOver = function() {
 		let c = main.children;
 		for (let i = 0; i < c.length; i++) {
-			if (c[i].id !== "")
-				document.getElementById(c[i].id).style.display = "none";
+			if (c[i].id !== "") document.getElementById(c[i].id).style.display = "none";
 		}
 		document.getElementById(id).style.display = "inline";
 		callback();
@@ -619,16 +599,14 @@ function pushSquare(i, j) {
 			document.getElementById("elementsOnGrid").innerHTML =
 				"Elem: " + foundElements + "|" + elementCount + "|" + totalElementCount;
 			gameBoard.grid[x][y].isDisplayed = true;
-			document.getElementById(i + "|" + j).style =
-				flexBasisCache + successBlockColor;
+			document.getElementById(i + "|" + j).style = flexBasisCache + successBlockColor;
 			document.getElementById("rightSound").play();
 		} else {
 			errorCount++;
 			totalErrorCount++;
 			updateErrors();
 			gameBoard.grid[x][y].isDisplayed = true;
-			document.getElementById(i + "|" + j).style =
-				flexBasisCache + errorBlockColor;
+			document.getElementById(i + "|" + j).style = flexBasisCache + errorBlockColor;
 			if (errorCount < maxErrors) {
 				document.getElementById("wrongSound").play();
 			}
@@ -661,8 +639,7 @@ function forceWin() {
 				gameBoard.grid[i][j].isDisplayed = true;
 				let x = i + 1;
 				let y = j + 1;
-				document.getElementById(x + "|" + y).style =
-					flexBasisCache + successBlockColor;
+				document.getElementById(x + "|" + y).style = flexBasisCache + successBlockColor;
 				document.getElementById("rightSound").play();
 			}
 		}
@@ -712,8 +689,7 @@ function isGameOver() {
 	if (selectedGameType === "arcade") {
 		document.getElementById("howLong").innerHTML = "Time: " + timerSeconds;
 	} else {
-		document.getElementById("howLong").innerHTML =
-			"Time so far: " + timerSeconds;
+		document.getElementById("howLong").innerHTML = "Time so far: " + timerSeconds;
 	}
 
 	level++; // next board
@@ -728,10 +704,7 @@ function isGameOver() {
 			rollCredits();
 			level = 0;
 		});
-		let score = parseInt(
-			(Math.max(elementCount - errorCount, 0) / elementCount) * 100,
-			10
-		);
+		let score = parseInt((Math.max(elementCount - errorCount, 0) / elementCount) * 100, 10);
 		let duration = countDown - timerSeconds;
 		let obj = {
 			id: user.id,
@@ -785,13 +758,10 @@ function rollCredits() {
 		"No freshmen were harmed in the making of this game."
 	];
 	if (selectedGameType === "arcade") {
-		document.getElementById("showCredits").innerHTML =
-			"Congrats!<br>You beat the game!";
+		document.getElementById("showCredits").innerHTML = "Congrats!<br>You beat the game!";
 	} else {
 		document.getElementById("showCredits").innerHTML =
-			"Congrats!<br>You beat the game<br> with " +
-			timerSeconds +
-			" seconds left!";
+			"Congrats!<br>You beat the game<br> with " + timerSeconds + " seconds left!";
 	}
 	let i = 0;
 
@@ -984,8 +954,8 @@ function chooseLevel() {
 function postData(obj, url, callback = noop) {
 	var data = {};
 	data = JSON.stringify(obj);
-	console.log("data to post:");
-	console.log(data);
+	//console.log("data to post:");
+	//console.log(data);
 
 	// Sending and receiving data in JSON format using POST method
 	var xhr = new XMLHttpRequest();
@@ -1051,10 +1021,7 @@ function init() {
 // move suggestion
 //   why am I making this?  just a quick way to check boundaries
 function doesSquareExist(i, j) {
-	if (
-		typeof gameBoard.grid[i] === "undefined" ||
-		typeof gameBoard.grid[i][j] === "undefined"
-	) {
+	if (typeof gameBoard.grid[i] === "undefined" || typeof gameBoard.grid[i][j] === "undefined") {
 		return false;
 	}
 	return true;
@@ -1100,19 +1067,13 @@ function bestSuggestion(isCenterSquareMarked) {
 			}
 			let score = getSuggestionScore(i, j);
 
-			if (
-				isCenterSquareMarked === true &&
-				gameBoard.grid[i][j].isUsed === true
-			) {
+			if (isCenterSquareMarked === true && gameBoard.grid[i][j].isUsed === true) {
 				if (score < bestSquare.score) {
 					bestSquare.i = i;
 					bestSquare.j = j;
 					bestSquare.score = score;
 				}
-			} else if (
-				isCenterSquareMarked === false &&
-				gameBoard.grid[i][j].isUsed === false
-			) {
+			} else if (isCenterSquareMarked === false && gameBoard.grid[i][j].isUsed === false) {
 				if (score > bestSquare.score) {
 					bestSquare.i = i;
 					bestSquare.j = j;
@@ -1156,9 +1117,7 @@ function animateSuggestion(square, blockColor, callback = noop) {
 		}
 		let i = square.i + 1;
 		let j = square.j + 1;
-		document.getElementById(
-			i + "|" + j
-		).style.backgroundColor = `rgb(${val}, ${val}, ${val})`;
+		document.getElementById(i + "|" + j).style.backgroundColor = `rgb(${val}, ${val}, ${val})`;
 
 		val += iterator;
 		if (maxBounces === 0) {

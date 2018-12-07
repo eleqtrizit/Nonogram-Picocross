@@ -38,11 +38,6 @@ class db
         $this->returnType = $_returnType;
     }
 
-    public function GetCredentials()
-    {
-        return array('host' => DB_HOST, 'user' => DB_USER, 'password', DB_PASSWORD, 'database', DB_DB);
-    }
-
     public function Get($sql)
     {
         if ($this->returnType == "json") {
