@@ -46,7 +46,8 @@ echo "Connected successfully.";
 
 run_sql_file($sqldump, $mysqli);
 
-echo "Database created and imported successfully.";
+echo "Database created and imported successfully.<br><br>";
+echo '<a href="./">Go to Game</a>';
 
 function run_sql_file($location, $mysqli)
 {
