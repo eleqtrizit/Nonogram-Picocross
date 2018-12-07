@@ -1,12 +1,9 @@
 <?php
 
-$host = 'localhost';
-$user = 'root';
-$password = '';
-$db = "8bitnonogram";
-$sqldump = "nonogram.sql";
+require_once 'phplibs/db.php';
+$db = new db();
 
-$mysqli = new mysqli($host, $user, $password);
+$credentials = $db->GetCredentials();
 ?>
 
 <!DOCTYPE html>
@@ -19,35 +16,46 @@ $mysqli = new mysqli($host, $user, $password);
 
 <?php
 
-$mysqli->query("create database $db");
-echo "Database $db created.";
+// Connect to MySQL
+$mysqli = new mysqli(credentials["host"], credentials["user"], credentials["password"]);
+// Check connection
+if ($mysqli->connect_error) {
+    echo "Please alter/check the credentials in the file phplibs/db.php.";
+    die("Connection failed: " . $mysqli->connect_error);
+}
+echo "Connected successfully";
+
+// Create database
+if ($mysqli->query("create database $db") === true) {
+    echo "Database $db successfully.";
+} else {
+    die("Error creating database: " . $mysqli->error);
+}
+
 echo "<br><br>";
 echo "Connecting to new db $db.";
 $mysqli->close();
-$mysqli = new mysqli($host, $user, $password, $db);
+$mysqli = new mysqli(credentials["host"], credentials["user"], credentials["password"], credentials["db"]);
+if ($mysqli->connect_error) {
+    die("Connection failed: " . $mysqli->connect_error);
+}
+echo "Connected successfully.";
 
-$mysqli->query("select database $db");
+run_sql_file($sqldump, $mysqli);
 
+echo "Database created and imported successfully.";
 
-$success = run_sql_file($sqldump,$mysqli);
-
-echo "<br><br>";
-echo "Success:"; 
-echo $success["success"];
-echo "<br>";
-echo "Total: ";
-echo $success["total"];
-
-function run_sql_file($location,$mysqli){
+function run_sql_file($location, $mysqli)
+{
     //load file
     $commands = file_get_contents($location);
 
     //delete comments
-    $lines = explode("\n",$commands);
+    $lines = explode("\n", $commands);
     $commands = '';
-    foreach($lines as $line){
+    foreach ($lines as $line) {
         $line = trim($line);
-        if( $line && !startsWith($line,'--') && !startsWith($line, '/*') ) {
+        if ($line && !startsWith($line, '--') && !startsWith($line, '/*')) {
             $commands .= $line;
         }
     }
@@ -57,36 +65,21 @@ function run_sql_file($location,$mysqli){
 
     //run commands
     $total = $success = 0;
-    foreach($commands as $command){
-        if(trim($command)){
-			//echo $command;
-			//echo "<br>";
-			$succ = $mysqli->query($command);
-			//echo $succ;
-			
-            $success += ($succ==false ? 0 : 1);
-            $total += 1;
-			
-			if ($succ==true) {
-				//echo "Query Success<br>";
-			} else {
-				//echo "Error: " . $mysqli->error;
-			}
-			//echo "<br>";
-			//echo "<br>";
+    foreach ($commands as $command) {
+        if (trim($command)) {
+            if ($mysqli->query($command) == true) {
+                echo "Query Success<br>";
+            } else {
+                echo "Query failed: $command.<br>";
+                die("Error: " . $mysqli->error);
+            }
         }
     }
-
-    //return number of successful queries and total number of queries found
-    return array(
-        "success" => $success,
-        "total" => $total
-    );
 }
 
-
 // Here's a startsWith function
-function startsWith($haystack, $needle){
+function startsWith($haystack, $needle)
+{
     $length = strlen($needle);
     return (substr($haystack, 0, $length) === $needle);
 }
