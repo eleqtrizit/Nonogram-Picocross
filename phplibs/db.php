@@ -11,9 +11,11 @@
  * Common database access methods
  */
 
+error_reporting(E_ERROR | E_PARSE);
+ 
 define('DB_HOST', 'localhost');
-define('DB_USER', 'agustin');
-define('DB_PASSWORD', '7788');
+define('DB_USER', 'root');
+define('DB_PASSWORD', '');
 define('DB_DB', 'nonogram');
 
 class db
