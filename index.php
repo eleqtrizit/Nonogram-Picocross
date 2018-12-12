@@ -115,7 +115,7 @@ else {
 						Time Trial
 					</div>
 					<div class="small">
-						<div id="noAvatar" onclick="selectUserFunctions()" style="cursor: pointer; display:none" role="navigation">Account</div>
+						<div id="noAvatar" onclick="selectUserFunctions()" role="navigation">Account</div>
 						<div id="avatarImage" onclick="selectUserFunctions()" style="cursor: pointer; display:none" role="navigation"></div>
 						<div onclick="gotoSettings()" style="cursor: pointer;" id="selectSettings" role="navigation">Settings</div>
 						<div id="selectHelp" onclick="gotoHelp()" role="navigation">Help</div>

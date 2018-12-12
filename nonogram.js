@@ -81,10 +81,10 @@ function configureUserMenus() {
 		i.src = user.avatarpath;
 		i.width = "200";
 		document.getElementById("avatarImage").appendChild(i);
-		document.getElementById("noAvatar").style.display = "none";
+		//document.getElementById("noAvatar").style.display = "none";
 		document.getElementById("avatarImage").style.display = "block";
 	} else {
-		document.getElementById("noAvatar").style.display = "block";
+		//document.getElementById("noAvatar").style.display = "block";
 		document.getElementById("avatarImage").style.display = "none";
 	}
 }
